@@ -1,0 +1,16 @@
+# See https://atom.io/docs/latest/creating-a-package#menus for more details
+'context-menu':
+  '.overlayer':
+      'Enable ruby-test': 'ruby-test:toggle'
+
+'menu': [
+  {
+    'label': 'Packages'
+    'submenu': [
+      'label': 'ruby-test'
+      'submenu': [
+        { 'label': 'Toggle', 'command': 'ruby-test:toggle' }
+      ]
+    ]
+  }
+]
