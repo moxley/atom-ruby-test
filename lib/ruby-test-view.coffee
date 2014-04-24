@@ -3,8 +3,12 @@
 module.exports =
 class RubyTestView extends View
   @content: ->
-    @div class: 'ruby-test overlay from-top', =>
-      @div "The RubyTest package is Alive! It's ALIVE!", class: "message"
+    @div class: "shell-runner inset-panel panel-bottom", =>
+      @div class: "panel-heading", =>
+        @span 'Running command: '
+        @span outlet: 'header'
+      @div class: "panel-body padded results", =>
+        @pre "FOOOO", outlet: 'results'
 
   initialize: (serializeState) ->
     atom.workspaceView.command "ruby-test:toggle", => @toggle()
@@ -21,4 +25,4 @@ class RubyTestView extends View
     if @hasParent()
       @detach()
     else
-      atom.workspaceView.append(this)
+      atom.workspaceView.prependToBottom(this)
