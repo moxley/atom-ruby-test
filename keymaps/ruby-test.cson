@@ -9,3 +9,4 @@
 # https://atom.io/docs/latest/advanced/keymaps
 '.workspace':
   'ctrl-alt-k': 'ruby-test:toggle'
+  'ctrl-alt-l': 'ruby-test:run'

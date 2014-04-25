@@ -2,6 +2,7 @@
 'context-menu':
   '.overlayer':
       'Enable ruby-test': 'ruby-test:toggle'
+      'Run ruby-test': 'ruby-test:run'
 
 'menu': [
   {
@@ -10,6 +11,7 @@
       'label': 'ruby-test'
       'submenu': [
         { 'label': 'Toggle', 'command': 'ruby-test:toggle' }
+        { 'label': 'Run', 'command': 'ruby-test:run' }
       ]
     ]
   }
