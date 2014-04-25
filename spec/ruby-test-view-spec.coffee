@@ -12,7 +12,7 @@ describe "RubyTestView", ->
       spyOn(TestRunner.prototype, 'run')
       @view = new RubyTestView()
       @view.run()
-      expect(TestRunner.prototype.initialize).toHaveBeenCalledWith(@view)
+      expect(TestRunner.prototype.initialize).toHaveBeenCalledWith(@view.testRunnerParams())
       expect(TestRunner.prototype.run).toHaveBeenCalled()
 
   describe "::write", ->

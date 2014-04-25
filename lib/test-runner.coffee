@@ -1,3 +1,5 @@
+{BufferedProcess} = require 'atom'
+
 module.exports =
   class TestRunner
     constructor: (writer) ->
@@ -7,4 +9,19 @@ module.exports =
       @writer = writer
 
     run: ->
-      @writer.write("Hello, world")
+      p = @newProcess()
+      p.process.stdin.write "echo -n 'Hello, world' && exit\n"
+
+    newProcess: ->
+      new BufferedProcess
+        command: 'bash',
+        args:    ['-l'],
+        stdout:  @write,
+        stderr:  @write,
+        exit:    @exit
+
+    write: (str) =>
+      @writer.write(str)
+
+    exit: =>
+      @writer.exit()

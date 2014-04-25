@@ -33,13 +33,20 @@ class RubyTestView extends View
   run: ->
     @output = ''
     @showPanel()
-    runner = new TestRunner(@)
+    runner = new TestRunner(@testRunnerParams())
     runner.run()
+
+  testRunnerParams: ->
+    write: @write
+    exit: @onTestRunEnd
+
+  onTestRunEnd: =>
+    null
 
   showPanel: ->
     atom.workspaceView.prependToBottom(@) unless @hasParent()
 
-  write: (str) ->
+  write: (str) =>
     @output ||= ''
     @output += str
     @results.text(@output)

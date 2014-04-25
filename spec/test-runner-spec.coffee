@@ -6,10 +6,15 @@ describe "TestRunner", ->
       output: ''
       write: (str) ->
         @output += str
+      exit: ->
+        @exited = true
     }
     @runner = new TestRunner(@writer)
 
   describe '::run', ->
     it "appends to writer", ->
       @runner.run()
-      expect(@writer.output).toBe "Hello, world"
+      waitsFor ->
+        @writer.exited
+      runs ->
+        expect(@writer.output).toBe "Hello, world"
