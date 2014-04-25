@@ -10,7 +10,10 @@ describe "RubyTestView", ->
     it "instantiates TestRunner, and calls ::run on it", ->
       spyOn(TestRunner.prototype, 'initialize')
       spyOn(TestRunner.prototype, 'run')
+
       @view = new RubyTestView()
+      @view.activeFile = ->
+        'Hello, World!'
       @view.run()
       expect(TestRunner.prototype.initialize).toHaveBeenCalledWith(@view.testRunnerParams())
       expect(TestRunner.prototype.run).toHaveBeenCalled()

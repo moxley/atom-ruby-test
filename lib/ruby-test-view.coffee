@@ -37,6 +37,7 @@ class RubyTestView extends View
     runner.run()
 
   testRunnerParams: ->
+    file: @activeFile()
     write: @write
     exit: @onTestRunEnd
 
@@ -50,3 +51,6 @@ class RubyTestView extends View
     @output ||= ''
     @output += str
     @results.text(@output)
+
+  activeFile: ->
+    atom.project.relativize(atom.workspace.getActiveEditor().buffer.file.path)

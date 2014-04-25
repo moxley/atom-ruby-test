@@ -2,15 +2,18 @@
 
 module.exports =
   class TestRunner
-    constructor: (writer) ->
-      @initialize(writer)
+    constructor: (listener) ->
+      @initialize(listener)
 
-    initialize: (writer) ->
-      @writer = writer
+    initialize: (listener) ->
+      @listener = listener
 
     run: ->
       p = @newProcess()
-      p.process.stdin.write "echo -n 'Hello, world' && exit\n"
+      p.process.stdin.write "#{@command()}; exit\n"
+
+    command: ->
+      "echo -n '#{@listener.file}'"
 
     newProcess: ->
       new BufferedProcess
@@ -21,7 +24,7 @@ module.exports =
         exit:    @exit
 
     write: (str) =>
-      @writer.write(str)
+      @listener.write(str)
 
     exit: =>
-      @writer.exit()
+      @listener.exit()
