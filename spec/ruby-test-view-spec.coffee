@@ -27,7 +27,7 @@ describe "RubyTestView", ->
       spyOn(TestRunner.prototype, 'command').andReturn 'fooTestCommand'
       @view = new RubyTestView()
       @view.testSingle()
-      params = _.extend({}, @view.testRunnerParams(), {testType: "single"})
+      params = _.extend({}, @view.testRunnerParams(), {testScope: "single"})
       expect(TestRunner.prototype.initialize).toHaveBeenCalledWith(params)
       expect(TestRunner.prototype.run).toHaveBeenCalled()
 

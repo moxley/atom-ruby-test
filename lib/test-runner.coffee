@@ -22,7 +22,7 @@ module.exports =
       cwd:     @testParams.cwd
 
     command: =>
-      cmd = if @params.testType == "single"
+      cmd = if @params.testScope == "single"
           @testParams.testSingleCommand()
         else
           @testParams.testFileCommand()

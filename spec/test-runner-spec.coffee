@@ -26,8 +26,8 @@ describe "TestRunner", ->
       expect(ShellRunner.prototype.initialize).toHaveBeenCalledWith(runner.shellRunnerParams())
       expect(@testRunnerParams.setTestInfo).toHaveBeenCalledWith("fooTestCommand fooTestFile")
 
-    it "constructs a single-test command when testType is 'single'", ->
-      @testRunnerParams.testType = "single"
+    it "constructs a single-test command when testScope is 'single'", ->
+      @testRunnerParams.testScope = "single"
       runner = new TestRunner(@testRunnerParams)
       runner.run()
       expect(@testRunnerParams.setTestInfo).toHaveBeenCalledWith("fooTestCommand fooTestFile:100")

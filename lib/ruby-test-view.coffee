@@ -36,7 +36,7 @@ class RubyTestView extends View
     runner.run()
 
   testSingle: ->
-    runner = @prepareForTest(testType: "single")
+    runner = @prepareForTest(testScope: "single")
     runner.run()
 
   prepareForTest: (overrideParams) ->
