@@ -8,5 +8,5 @@
 # For more detailed documentation see
 # https://atom.io/docs/latest/advanced/keymaps
 '.workspace':
-  'ctrl-alt-k': 'ruby-test:toggle'
-  'ctrl-alt-l': 'ruby-test:run'
+  'cmd-ctrl-x': 'ruby-test:toggle'
+  'cmd-ctrl-t': 'ruby-test:run'
