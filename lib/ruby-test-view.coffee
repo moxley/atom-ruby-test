@@ -1,5 +1,5 @@
 {View} = require 'atom'
-TestRunner = require './test-runner'
+ShellRunner = require './shell-runner'
 
 module.exports =
 class RubyTestView extends View
@@ -36,7 +36,7 @@ class RubyTestView extends View
     @output = ''
     @flush()
     @showPanel()
-    runner = new TestRunner(params)
+    runner = new ShellRunner(params)
     runner.run()
 
   testRunnerParams: ->

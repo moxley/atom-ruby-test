@@ -1,7 +1,7 @@
 {BufferedProcess} = require 'atom'
 
 module.exports =
-  class TestRunner
+  class ShellRunner
     constructor: (params) ->
       @initialize(params)
 

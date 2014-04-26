@@ -1,4 +1,4 @@
-TestRunner = require './../lib/test-runner'
+ShellRunner = require './../lib/shell-runner'
 
 class TestParams
   file: 'Hello, World!'
@@ -10,10 +10,10 @@ class TestParams
   command: =>
     "echo -n #{@file}"
 
-describe "TestRunner", ->
+describe "ShellRunner", ->
   beforeEach ->
     @params = new TestParams()
-    @runner = new TestRunner(@params)
+    @runner = new ShellRunner(@params)
 
   describe '::run', ->
     it "appends to writer", ->
