@@ -1,4 +1,5 @@
 TestRunner = require '../lib/test-runner'
+TestParams = require '../lib/test-params'
 ShellRunner = require '../lib/shell-runner'
 
 describe "TestRunner", ->
@@ -12,10 +13,11 @@ describe "TestRunner", ->
         setTestInfo:       => null
       spyOn(testRunnerParams, 'shellRunnerParams')
       spyOn(testRunnerParams, 'setTestInfo')
+      spyOn(TestParams.prototype, 'command').andReturn('fooTestCommand {relative_path}')
+      spyOn(TestParams.prototype, 'activeFile').andReturn('fooTestFile')
 
       runner = new TestRunner(testRunnerParams)
-      spyOn(runner, 'command').andReturn 'fooTestCommand'
       runner.run()
 
       expect(ShellRunner.prototype.initialize).toHaveBeenCalledWith(runner.shellRunnerParams())
-      expect(testRunnerParams.setTestInfo).toHaveBeenCalledWith(runner.command())
+      expect(testRunnerParams.setTestInfo).toHaveBeenCalledWith("fooTestCommand fooTestFile")

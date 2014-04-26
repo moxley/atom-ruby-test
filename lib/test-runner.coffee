@@ -1,4 +1,5 @@
 ShellRunner = require './shell-runner'
+TestParams = require './test-params'
 
 module.exports =
   class TestRunner
@@ -7,6 +8,7 @@ module.exports =
 
     initialize: (params) ->
       @params = params
+      @testParams = @params.testParams || (new TestParams())
 
     run: ->
       shell = new ShellRunner(@shellRunnerParams())
@@ -17,14 +19,9 @@ module.exports =
       write:   @params.write
       exit:    @params.exit
       command: @command
-      cwd:     @cwd
-
-    cwd: =>
-      atom.project.getPath()
+      cwd:     @testParams.cwd
 
     command: =>
-      atom.config.get("ruby-test.testCommand").
-                  replace('{relative_path}', @activeFile())
-
-    activeFile: ->
-      atom.project.relativize(atom.workspace.getActiveEditor().buffer.file.path)
+      @testParams.
+        command().
+        replace('{relative_path}', @testParams.activeFile())
