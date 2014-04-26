@@ -14,8 +14,8 @@ class RubyTestView extends View
 
   initialize: (serializeState) ->
     atom.workspaceView.command "ruby-test:toggle", => @toggle()
-    atom.workspaceView.command "ruby-test:run", => @run()
-    atom.workspaceView.command "ruby-test:run-single", => @runSingle()
+    atom.workspaceView.command "ruby-test:test-file", => @testFile()
+    atom.workspaceView.command "ruby-test:test-single", => @testSingle()
 
   # Returns an object that can be retrieved when package is activated
   serialize: ->
@@ -31,11 +31,11 @@ class RubyTestView extends View
     else
       @showPanel()
 
-  run: ->
+  testFile: ->
     runner = @prepareForTest()
     runner.run()
 
-  runSingle: ->
+  testSingle: ->
     runner = @prepareForTest(testType: "single")
     runner.run()
 

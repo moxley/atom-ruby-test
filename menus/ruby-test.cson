@@ -2,8 +2,8 @@
 'context-menu':
   '.overlayer':
       'Show ruby-test': 'ruby-test:toggle'
-      'Run ruby-test for file': 'ruby-test:run'
-      'Run ruby-test at line': 'ruby-test:run-single'
+      'Run ruby-test for file': 'ruby-test:test-file'
+      'Run ruby-test at line': 'ruby-test:test-single'
 
 'menu': [
   {
@@ -12,8 +12,8 @@
       'label': 'Ruby Test'
       'submenu': [
         { 'label': 'Toggle Panel', 'command': 'ruby-test:toggle' }
-        { 'label': 'Run test file', 'command': 'ruby-test:run' }
-        { 'label': 'Run single test', 'command': 'ruby-test:run-single' }
+        { 'label': 'Run test file', 'command': 'ruby-test:test-file' }
+        { 'label': 'Run single test', 'command': 'ruby-test:test-single' }
       ]
     ]
   }

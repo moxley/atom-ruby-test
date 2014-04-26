@@ -14,7 +14,7 @@ describe "RubyTestView", ->
 
       @view = new RubyTestView()
       spyOn(@view, 'setTestInfo').andCallThrough()
-      @view.run()
+      @view.testFile()
       expect(TestRunner.prototype.initialize).toHaveBeenCalledWith(@view.testRunnerParams())
       expect(TestRunner.prototype.run).toHaveBeenCalled()
       expect(@view.setTestInfo).toHaveBeenCalled()
