@@ -1,10 +1,10 @@
 module.exports =
   class TestParams
-    cwd: =>
+    cwd: ->
       atom.project.getPath()
 
-    command: =>
-      atom.config.get("ruby-test.testCommand")
+    testFileCommand: ->
+      atom.config.get("ruby-test.testFileCommand")
 
     activeFile: ->
       atom.project.relativize(atom.workspace.getActiveEditor().buffer.file.path)

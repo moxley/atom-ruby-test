@@ -8,7 +8,7 @@ module.exports =
 
     initialize: (params) ->
       @params = params
-      @testParams = @params.testParams || (new TestParams())
+      @testParams = new TestParams()
 
     run: ->
       shell = new ShellRunner(@shellRunnerParams())
@@ -22,6 +22,5 @@ module.exports =
       cwd:     @testParams.cwd
 
     command: =>
-      @testParams.
-        command().
-        replace('{relative_path}', @testParams.activeFile())
+      cmd = @testParams.testFileCommand()
+      cmd.replace('{relative_path}', @testParams.activeFile())

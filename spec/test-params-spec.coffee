@@ -8,8 +8,8 @@ describe "TestParams", ->
       relativize: (filePath) ->
         "fooDirectory/#{filePath}"
     atom.project = project
-    @savedTestCommand = atom.config.get("ruby-test.testCommand")
-    atom.config.set("ruby-test.testCommand", "fooCommand")
+    @savedTestCommand = atom.config.get("ruby-test.testFileCommand")
+    atom.config.set("ruby-test.testFileCommand", "fooCommand")
     editor =
       buffer:
         file:
@@ -22,9 +22,9 @@ describe "TestParams", ->
     it "is atom.project.getPath()", ->
       expect(@params.cwd()).toBe("fooPath")
 
-  describe "::command", ->
-    it "is the atom config for 'ruby-test.testCommand'", ->
-      expect(@params.command()).toBe("fooCommand")
+  describe "::testFileCommand", ->
+    it "is the atom config for 'ruby-test.testFileCommand'", ->
+      expect(@params.testFileCommand()).toBe("fooCommand")
 
   describe "::activeFile", ->
     it "is the project-relative path for the current file path", ->
@@ -32,4 +32,4 @@ describe "TestParams", ->
 
   afterEach ->
     delete atom.project
-    atom.config.set("ruby-test.testCommand", @savedTestCommand)
+    atom.config.set("ruby-test.testFileCommand", @savedTestCommand)

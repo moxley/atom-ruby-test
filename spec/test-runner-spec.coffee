@@ -13,7 +13,7 @@ describe "TestRunner", ->
         setTestInfo:       => null
       spyOn(testRunnerParams, 'shellRunnerParams')
       spyOn(testRunnerParams, 'setTestInfo')
-      spyOn(TestParams.prototype, 'command').andReturn('fooTestCommand {relative_path}')
+      spyOn(TestParams.prototype, 'testFileCommand').andReturn('fooTestCommand {relative_path}')
       spyOn(TestParams.prototype, 'activeFile').andReturn('fooTestFile')
 
       runner = new TestRunner(testRunnerParams)
