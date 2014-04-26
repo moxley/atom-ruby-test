@@ -1,3 +1,4 @@
+_ = require 'underscore-plus'
 {View} = require 'atom'
 TestRunner = require './test-runner'
 
@@ -14,6 +15,7 @@ class RubyTestView extends View
   initialize: (serializeState) ->
     atom.workspaceView.command "ruby-test:toggle", => @toggle()
     atom.workspaceView.command "ruby-test:run", => @run()
+    atom.workspaceView.command "ruby-test:run-single", => @runSingle()
 
   # Returns an object that can be retrieved when package is activated
   serialize: ->
@@ -30,12 +32,19 @@ class RubyTestView extends View
       @showPanel()
 
   run: ->
-    params = @testRunnerParams()
+    runner = @prepareForTest()
+    runner.run()
+
+  runSingle: ->
+    runner = @prepareForTest(testType: "single")
+    runner.run()
+
+  prepareForTest: (overrideParams) ->
+    params = _.extend({}, @testRunnerParams(), overrideParams || {})
     @output = ''
     @flush()
     @showPanel()
     runner = new TestRunner(params)
-    runner.run()
 
   testRunnerParams: ->
     write: @write

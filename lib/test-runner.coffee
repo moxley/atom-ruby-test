@@ -22,5 +22,9 @@ module.exports =
       cwd:     @testParams.cwd
 
     command: =>
-      cmd = @testParams.testFileCommand()
-      cmd.replace('{relative_path}', @testParams.activeFile())
+      cmd = if @params.testType == "single"
+          @testParams.testSingleCommand()
+        else
+          @testParams.testFileCommand()
+      cmd.replace('{relative_path}', @testParams.activeFile()).
+          replace('{line_number}', @testParams.currentLine())

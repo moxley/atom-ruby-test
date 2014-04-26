@@ -10,3 +10,4 @@
 '.workspace':
   'cmd-ctrl-x': 'ruby-test:toggle'
   'cmd-ctrl-t': 'ruby-test:run'
+  'cmd-ctrl-r': 'ruby-test:run-single'
