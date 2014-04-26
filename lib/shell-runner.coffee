@@ -13,7 +13,7 @@ module.exports =
 
     run: ->
       p = @newProcess()
-      fullCommand = "#{@params.command()}; exit\n"
+      fullCommand = "cd #{@params.cwd()} && #{@params.command()}; exit\n"
       p.process.stdin.write fullCommand
 
     newProcess: ->

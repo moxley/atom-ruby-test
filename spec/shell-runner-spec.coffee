@@ -9,6 +9,8 @@ class TestParams
     @exited = true
   command: =>
     "echo -n #{@file}"
+  cwd: =>
+    "/tmp"
 
 describe "ShellRunner", ->
   beforeEach ->

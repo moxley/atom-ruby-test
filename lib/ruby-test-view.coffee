@@ -1,5 +1,5 @@
 {View} = require 'atom'
-ShellRunner = require './shell-runner'
+TestRunner = require './test-runner'
 
 module.exports =
 class RubyTestView extends View
@@ -24,7 +24,6 @@ class RubyTestView extends View
     @detach()
 
   toggle: ->
-    console.log "RubyTestView was toggled!"
     if @hasParent()
       @detach()
     else
@@ -32,26 +31,19 @@ class RubyTestView extends View
 
   run: ->
     params = @testRunnerParams()
-    @header.text(params.command())
     @output = ''
     @flush()
     @showPanel()
-    runner = new ShellRunner(params)
+    runner = new TestRunner(params)
     runner.run()
 
   testRunnerParams: ->
     write: @write
     exit: @onTestRunEnd
-    command: @testCommand
+    setTestInfo: @setTestInfo
 
-  cwd: ->
-    atom.project.getPath()
-
-  testCommand: =>
-    runTestCmd = atom.config.
-                      get("ruby-test.testCommand").
-                      replace('{relative_path}', @activeFile())
-    "cd #{@cwd()} && #{runTestCmd}"
+  setTestInfo: (infoStr) =>
+    @header.text(infoStr)
 
   onTestRunEnd: =>
     null
@@ -66,6 +58,3 @@ class RubyTestView extends View
 
   flush: ->
     @results.text(@output)
-
-  activeFile: ->
-    atom.project.relativize(atom.workspace.getActiveEditor().buffer.file.path)
