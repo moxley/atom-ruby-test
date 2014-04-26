@@ -1,21 +1,26 @@
 TestRunner = require './../lib/test-runner'
 
+class TestParams
+  file: 'Hello, World!'
+  output: ''
+  write: (str) =>
+    @output += str
+  exit: =>
+    @exited = true
+  testCommand: ->
+    'echo -n'
+  cwd: ->
+    '/tmp'
+
 describe "TestRunner", ->
   beforeEach ->
-    @writer = {
-      file: 'Hello, world'
-      output: ''
-      write: (str) ->
-        @output += str
-      exit: ->
-        @exited = true
-    }
-    @runner = new TestRunner(@writer)
+    @params = new TestParams()
+    @runner = new TestRunner(@params)
 
   describe '::run', ->
     it "appends to writer", ->
       @runner.run()
       waitsFor ->
-        @writer.exited
+        @params.exited
       runs ->
-        expect(@writer.output).toBe "Hello, world"
+        expect(@params.output).toBe "Hello, World!"

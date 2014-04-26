@@ -32,6 +32,7 @@ class RubyTestView extends View
 
   run: ->
     @output = ''
+    @flush()
     @showPanel()
     runner = new TestRunner(@testRunnerParams())
     runner.run()
@@ -40,6 +41,14 @@ class RubyTestView extends View
     file: @activeFile()
     write: @write
     exit: @onTestRunEnd
+    testCommand: @testCommand
+    cwd: @cwd
+
+  cwd: ->
+    atom.project.getPath()
+
+  testCommand: ->
+    atom.config.get("ruby-test.testCommand")
 
   onTestRunEnd: =>
     null
@@ -50,6 +59,9 @@ class RubyTestView extends View
   write: (str) =>
     @output ||= ''
     @output += str
+    @flush()
+
+  flush: ->
     @results.text(@output)
 
   activeFile: ->

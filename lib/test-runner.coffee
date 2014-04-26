@@ -2,29 +2,29 @@
 
 module.exports =
   class TestRunner
-    constructor: (listener) ->
-      @initialize(listener)
+    constructor: (params) ->
+      @initialize(params)
 
-    initialize: (listener) ->
-      @listener = listener
+    initialize: (params) ->
+      @params = params
+      @write = params.write
+      @exit = params.exit
+      @filePath = params.file
 
     run: ->
       p = @newProcess()
-      p.process.stdin.write "#{@command()}; exit\n"
+      fullCommand = "cd #{@params.cwd()} && #{@command()}; exit\n"
+      console.log "fullCommand: #{fullCommand}"
+      p.process.stdin.write fullCommand
 
     command: ->
-      "echo -n '#{@listener.file}'"
+      "#{@params.testCommand()} '#{@filePath}'"
 
     newProcess: ->
       new BufferedProcess
         command: 'bash',
         args:    ['-l'],
-        stdout:  @write,
-        stderr:  @write,
-        exit:    @exit
-
-    write: (str) =>
-      @listener.write(str)
-
-    exit: =>
-      @listener.exit()
+        stdout:  @write
+        stderr:  @write
+        exit:    =>
+          @params.exit()
