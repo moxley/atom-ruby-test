@@ -6,19 +6,15 @@ module.exports =
       @initialize(params)
 
     initialize: (params) ->
-      @params = params
-      @write = params.write
-      @exit = params.exit
-      @filePath = params.file
+      @params = params || throw "Missing ::params argument"
+      @write = params.write || throw "Missing ::write parameter"
+      @exit = params.exit || throw "Missing ::exit parameter"
+      @command = params.command || throw "Missing ::command parameter"
 
     run: ->
       p = @newProcess()
-      fullCommand = "cd #{@params.cwd()} && #{@command()}; exit\n"
-      console.log "fullCommand: #{fullCommand}"
+      fullCommand = "#{@params.command()}; exit\n"
       p.process.stdin.write fullCommand
-
-    command: ->
-      "#{@params.testCommand()} '#{@filePath}'"
 
     newProcess: ->
       new BufferedProcess

@@ -7,10 +7,8 @@ class TestParams
     @output += str
   exit: =>
     @exited = true
-  testCommand: ->
-    'echo -n'
-  cwd: ->
-    '/tmp'
+  command: =>
+    "echo -n #{@file}"
 
 describe "TestRunner", ->
   beforeEach ->

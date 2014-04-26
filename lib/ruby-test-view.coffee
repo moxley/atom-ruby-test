@@ -31,24 +31,27 @@ class RubyTestView extends View
       @showPanel()
 
   run: ->
+    params = @testRunnerParams()
+    @header.text(params.command())
     @output = ''
     @flush()
     @showPanel()
-    runner = new TestRunner(@testRunnerParams())
+    runner = new TestRunner(params)
     runner.run()
 
   testRunnerParams: ->
-    file: @activeFile()
     write: @write
     exit: @onTestRunEnd
-    testCommand: @testCommand
-    cwd: @cwd
+    command: @testCommand
 
   cwd: ->
     atom.project.getPath()
 
-  testCommand: ->
-    atom.config.get("ruby-test.testCommand")
+  testCommand: =>
+    runTestCmd = atom.config.
+                      get("ruby-test.testCommand").
+                      replace('{relative_path}', @activeFile())
+    "cd #{@cwd()} && #{runTestCmd}"
 
   onTestRunEnd: =>
     null

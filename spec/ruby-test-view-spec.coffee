@@ -8,8 +8,9 @@ describe "RubyTestView", ->
 
   describe "::run", ->
     it "instantiates TestRunner, and calls ::run on it", ->
-      spyOn(TestRunner.prototype, 'initialize')
-      spyOn(TestRunner.prototype, 'run')
+      spyOn(TestRunner.prototype, 'initialize').andCallThrough()
+      spyOn(TestRunner.prototype, 'run').andCallThrough()
+      atom.config.set("ruby-test.testCommand", 'fooCommand')
 
       @view = new RubyTestView()
       @view.activeFile = ->
