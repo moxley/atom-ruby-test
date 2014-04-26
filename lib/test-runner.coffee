@@ -1,5 +1,5 @@
 ShellRunner = require './shell-runner'
-TestParams = require './test-params'
+SourceInfo = require './source-info'
 
 module.exports =
   class TestRunner
@@ -8,7 +8,7 @@ module.exports =
 
     initialize: (params) ->
       @params = params
-      @testParams = new TestParams()
+      @testParams = new SourceInfo()
 
     run: ->
       shell = new ShellRunner(@shellRunnerParams())

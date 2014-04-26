@@ -1,5 +1,5 @@
 module.exports =
-  class TestParams
+  class SourceInfo
     cwd: ->
       atom.project.getPath()
 

@@ -1,6 +1,6 @@
 ShellRunner = require './../lib/shell-runner'
 
-class TestParams
+class SourceInfo
   file: 'Hello, World!'
   output: ''
   write: (str) =>
@@ -14,7 +14,7 @@ class TestParams
 
 describe "ShellRunner", ->
   beforeEach ->
-    @params = new TestParams()
+    @params = new SourceInfo()
     @runner = new ShellRunner(@params)
 
   describe '::run', ->

@@ -1,6 +1,6 @@
-TestParams = require '../lib/test-params'
+SourceInfo = require '../lib/source-info'
 
-describe "TestParams", ->
+describe "SourceInfo", ->
   beforeEach ->
     project =
       getPath: ->
@@ -18,7 +18,7 @@ describe "TestParams", ->
           path:
             "fooFilePath"
     spyOn(atom.workspace, 'getActiveEditor').andReturn(@editor)
-    @params = new TestParams()
+    @params = new SourceInfo()
 
   describe "::cwd", ->
     it "is atom.project.getPath()", ->
