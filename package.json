@@ -1,8 +1,11 @@
 {
   "name": "ruby-test",
+  "author": "Moxley Stratton",
+  "homepage": "https://github.com/moxley/atom-ruby-test",
+  "bugs": "https://github.com/moxley/atom-ruby-test/issues",
   "main": "./lib/ruby-test",
   "version": "0.0.0",
-  "description": "Run Ruby tests from Atom",
+  "description": "Run Ruby tests, Rspec examples, and Cucumber features from Atom",
   "activationEvents": ["ruby-test:toggle", "ruby-test:run", "ruby-test:run-single"],
   "repository": "https://github.com/moxley/atom-ruby-test",
   "license": "MIT",
@@ -11,5 +14,12 @@
   },
   "dependencies": {
     "underscore-plus": "^1.0.6"
-  }
+  },
+  "keywords": [
+    "ruby",
+    "test",
+    "rspec",
+    "spec",
+    "cucumber"
+  ]
 }

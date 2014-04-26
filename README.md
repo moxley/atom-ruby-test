@@ -1,5 +1,5 @@
 # ruby-test package
 
-Run Ruby tests from Atom.
+Run Ruby tests, Rspec examples, and Cucumber features from Atom.
 
 ![A screenshot of your spankin' package](https://f.cloud.github.com/assets/69169/2290250/c35d867a-a017-11e3-86be-cd7c5bf3ff9b.gif)
