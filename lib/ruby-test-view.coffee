@@ -10,6 +10,7 @@ class RubyTestView extends View
         @span 'Running tests: '
         @span outlet: 'header'
       @div class: "panel-body padded results", =>
+        @div class: 'ruby-test-spinner', 'Starting...'
         @pre "", outlet: 'results'
 
   initialize: (serializeState) ->
@@ -66,9 +67,12 @@ class RubyTestView extends View
     null
 
   showPanel: ->
-    atom.workspaceView.prependToBottom(@) unless @hasParent()
+    unless @hasParent()
+      atom.workspaceView.prependToBottom(@)
+      @spinner = @find('.ruby-test-spinner')
 
   write: (str) =>
+    @spinner.hide()
     @output ||= ''
     @output += str
     @flush()

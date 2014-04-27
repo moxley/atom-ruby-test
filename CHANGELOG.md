@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 0.4.0
+
+* Show spinner while waiting for tests to show something
+
 ## Version 0.3.0
 
 * Restore lost changes from version 0.2.0
