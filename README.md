@@ -14,7 +14,7 @@ Click the `Install` button.
 
 ![Ruby Test Settings view](http://cl.ly/image/0e3227191h2s/download/ruby-test-settings.png)
 
-## Run tests
+## Run
 
 Open the test file you want to run, then issue one of the following:
 
