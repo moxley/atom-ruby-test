@@ -6,8 +6,8 @@ module.exports =
     testSingleCommand: "ruby -I test {relative_path}:{line_number}"
     rspecFileCommand: "rspec {relative_path}"
     rspecSingleCommand: "rspec {relative_path}:{line_number}"
-    cucumberFileCommand: "rspec {relative_path}"
-    cucumberSingleCommand: "rspec {relative_path}:{line_number}"
+    cucumberFileCommand: "cucumber {relative_path}"
+    cucumberSingleCommand: "cucumber {relative_path}:{line_number}"
 
   rubyTestView: null
 
