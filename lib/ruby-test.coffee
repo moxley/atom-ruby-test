@@ -12,6 +12,7 @@ module.exports =
   rubyTestView: null
 
   activate: (state) ->
+    atom.config.setDefaults "ruby-test", @configDefaults
     @rubyTestView = new RubyTestView(state.rubyTestViewState)
 
   deactivate: ->
