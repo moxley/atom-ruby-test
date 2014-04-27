@@ -17,20 +17,20 @@ module.exports =
       atom.config.get("ruby-test.#{framework}SingleCommand")
 
     activeFile: ->
-      atom.project.relativize(atom.workspace.getActiveEditor().buffer.file.path)
+      @_activeFile ||= atom.project.relativize(atom.workspace.getActiveEditor().buffer.file.path)
 
     currentLine: ->
-      editor = atom.workspace.getActiveEditor()
-      cursor = editor.getCursor()
-      cursor.getScreenRow() + 1
+      @_currentLine ||= unless @_currentLine
+        editor = atom.workspace.getActiveEditor()
+        cursor = editor.getCursor()
+        cursor.getScreenRow() + 1
 
     testFramework: ->
-      t = @fileType()
-      return null unless t
-      @frameworkLookup[t]
+      @_testFramework ||= unless @_testFramework
+        (t = @fileType()) and @frameworkLookup[t]
 
     fileType: ->
-      if matches = @activeFile().match(/_(test|spec)\.rb$/)
+      @_fileType ||= if matches = @activeFile().match(/_(test|spec)\.rb$/)
         matches[1]
       else if matches = @activeFile().match(/\.(feature)$/)
         matches[1]

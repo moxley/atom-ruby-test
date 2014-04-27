@@ -11,3 +11,4 @@
   'cmd-ctrl-x': 'ruby-test:toggle'
   'cmd-ctrl-t': 'ruby-test:test-file'
   'cmd-ctrl-r': 'ruby-test:test-single'
+  'cmd-ctrl-e': 'ruby-test:test-previous'

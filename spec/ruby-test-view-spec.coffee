@@ -19,6 +19,7 @@ describe "RubyTestView", ->
       expect(TestRunner.prototype.initialize).toHaveBeenCalledWith(@view.testRunnerParams())
       expect(TestRunner.prototype.run).toHaveBeenCalled()
       expect(@view.setTestInfo).toHaveBeenCalled()
+      expect(@view.hasParent()).toBe(true)
 
   describe "::testSingle", ->
     it "intantiates TestRunner and calls ::run on it with specific arguments", ->
@@ -30,6 +31,18 @@ describe "RubyTestView", ->
       params = _.extend({}, @view.testRunnerParams(), {testScope: "single"})
       expect(TestRunner.prototype.initialize).toHaveBeenCalledWith(params)
       expect(TestRunner.prototype.run).toHaveBeenCalled()
+      expect(@view.hasParent()).toBe(true)
+
+  describe "::testPrevious", ->
+    it "intantiates TestRunner and calls ::run on it with specific arguments", ->
+      @view = new RubyTestView()
+      previousRunner = new TestRunner(@view.testRunnerParams())
+      previousRunner.command = -> "foo"
+      @view.runner = previousRunner
+      @view.testPrevious()
+      expect(@view.output).toBe("")
+      expect(@view.hasParent()).toBe(true)
+      expect(@view.runner).toBe(previousRunner)
 
   describe "::write", ->
     it "appends content to results element", ->

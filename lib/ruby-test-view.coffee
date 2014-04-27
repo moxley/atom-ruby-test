@@ -16,6 +16,7 @@ class RubyTestView extends View
     atom.workspaceView.command "ruby-test:toggle", => @toggle()
     atom.workspaceView.command "ruby-test:test-file", => @testFile()
     atom.workspaceView.command "ruby-test:test-single", => @testSingle()
+    atom.workspaceView.command "ruby-test:test-previous", => @testPrevious()
 
   # Returns an object that can be retrieved when package is activated
   serialize: ->
@@ -32,19 +33,26 @@ class RubyTestView extends View
       @showPanel()
 
   testFile: ->
-    runner = @prepareForTest()
-    runner.run()
+    @runTest()
 
   testSingle: ->
-    runner = @prepareForTest(testScope: "single")
-    runner.run()
+    @runTest(testScope: "single")
 
-  prepareForTest: (overrideParams) ->
+  testPrevious: ->
+    return unless @runner
+    @newTestView()
+    @runner.run()
+
+  runTest: (overrideParams) ->
+    @newTestView()
     params = _.extend({}, @testRunnerParams(), overrideParams || {})
+    @runner = new TestRunner(params)
+    @runner.run()
+
+  newTestView: ->
     @output = ''
     @flush()
     @showPanel()
-    runner = new TestRunner(params)
 
   testRunnerParams: ->
     write: @write
