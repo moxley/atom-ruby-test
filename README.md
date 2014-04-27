@@ -12,7 +12,7 @@ Click the `Install` button.
 
 ## Configure
 
-![Ruby Test Settings view](http://cl.ly/image/0e3227191h2s/download/ruby-test-settings.png)
+![Ruby Test Settings view](http://cl.ly/image/3m062K261b2L/download/ruby-test-settings.png)
 
 ## Run
 
