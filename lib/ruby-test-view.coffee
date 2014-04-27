@@ -32,6 +32,9 @@ class RubyTestView extends View
       @detach()
     else
       @showPanel()
+      unless @runner
+        @spinner.hide()
+        @setTestInfo("No tests running")
 
   testFile: ->
     @runTest()
