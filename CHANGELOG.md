@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 0.3.0
+
+* Restore lost changes from version 0.2.0
+
 ## Version 0.2.0
 
 * Fix missing settings fields
