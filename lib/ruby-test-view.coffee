@@ -11,7 +11,7 @@ class RubyTestView extends View
       @div class: "panel-heading", =>
         @span 'Running tests: '
         @span outlet: 'header'
-      @div class: "panel-body padded results", =>
+      @div class: "panel-body", =>
         @div class: 'ruby-test-spinner', 'Starting...'
         @pre "", outlet: 'results'
 

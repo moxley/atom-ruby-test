@@ -6,15 +6,17 @@ module.exports =
       @view = view
       @view.on 'dblclick', '.ruby-test-resize-handle', @resizeToFitContent
       @view.on 'mousedown', '.ruby-test-resize-handle', @resizeStarted
+      @panelBody = @view.find('.panel-body')
 
     resizeToFitContent: =>
       @view.height(1)
       @view.height(Math.max(@view.outerHeight(), 40))
 
     resizeTreeView: (_arg) =>
-      workspaceHeight = $('.workspace').height()
-      statusBarHeight = $('.status-bar').height()
-      @view.height(workspaceHeight - _arg.pageY - statusBarHeight)
+      workspaceHeight = $('.workspace').outerHeight()
+      statusBarHeight = $('.status-bar').outerHeight()
+      testBarHeight = $('.ruby-test .panel-heading').outerHeight()
+      @panelBody.height(workspaceHeight - _arg.pageY - statusBarHeight - testBarHeight - 28)
 
     resizeStarted: =>
       console.log "resizeStarted"
