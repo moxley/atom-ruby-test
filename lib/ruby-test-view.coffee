@@ -1,11 +1,13 @@
 _ = require 'underscore-plus'
 {View} = require 'atom'
 TestRunner = require './test-runner'
+ResizeHandle = require './resize-handle'
 
 module.exports =
 class RubyTestView extends View
   @content: ->
     @div class: "ruby-test inset-panel panel-bottom", =>
+      @div class: "ruby-test-resize-handle"
       @div class: "panel-heading", =>
         @span 'Running tests: '
         @span outlet: 'header'
@@ -18,6 +20,7 @@ class RubyTestView extends View
     atom.workspaceView.command "ruby-test:test-file", => @testFile()
     atom.workspaceView.command "ruby-test:test-single", => @testSingle()
     atom.workspaceView.command "ruby-test:test-previous", => @testPrevious()
+    new ResizeHandle(@)
 
   # Returns an object that can be retrieved when package is activated
   serialize: ->
@@ -75,7 +78,7 @@ class RubyTestView extends View
       @spinner = @find('.ruby-test-spinner')
 
   write: (str) =>
-    @spinner.hide()
+    @spinner.hide() if @spinner
     @output ||= ''
     @output += str
     @flush()

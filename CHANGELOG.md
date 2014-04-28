@@ -3,6 +3,7 @@
 ## Version 0.4.0
 
 * Show spinner while waiting for tests to show something
+* Resizable panel
 
 ## Version 0.3.0
 
