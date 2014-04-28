@@ -1,5 +1,10 @@
 # Change Log
 
+## Version 0.4.1
+
+* Fix output area for resize
+* Fix scrolling of output area
+
 ## Version 0.4.0
 
 * Show spinner while waiting for tests to show something
