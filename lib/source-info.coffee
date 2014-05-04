@@ -1,3 +1,5 @@
+fs = require('fs')
+
 module.exports =
   class SourceInfo
     frameworkLookup:
@@ -12,6 +14,7 @@ module.exports =
       atom.config.get("ruby-test.#{@testFramework()}FileCommand")
 
     testAllCommand: ->
+      configName = "ruby-test.#{@testFramework()}AllCommand"
       atom.config.get("ruby-test.#{@testFramework()}AllCommand")
 
     testSingleCommand: ->
@@ -28,10 +31,21 @@ module.exports =
 
     testFramework: ->
       @_testFramework ||= unless @_testFramework
-        (t = @fileType()) and @frameworkLookup[t]
+        (t = @fileType()) and @frameworkLookup[t] or
+        @projectType()
 
     fileType: ->
       @_fileType ||= if matches = @activeFile().match(/_(test|spec)\.rb$/)
         matches[1]
       else if matches = @activeFile().match(/\.(feature)$/)
         matches[1]
+
+    projectType: ->
+      if fs.existsSync(atom.project.path + '/test')
+        'test'
+      else if fs.existsSync(atom.project.path + '/spec')
+        'rspec'
+      else if fs.existsSync(atom.project.path + '/feature')
+        'cucumber'
+      else
+        null
