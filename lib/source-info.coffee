@@ -9,12 +9,13 @@ module.exports =
       atom.project.getPath()
 
     testFileCommand: ->
-      framework = @testFramework()
-      atom.config.get("ruby-test.#{framework}FileCommand")
+      atom.config.get("ruby-test.#{@testFramework()}FileCommand")
+
+    testAllCommand: ->
+      atom.config.get("ruby-test.#{@testFramework()}AllCommand")
 
     testSingleCommand: ->
-      framework = @testFramework()
-      atom.config.get("ruby-test.#{framework}SingleCommand")
+      atom.config.get("ruby-test.#{@testFramework()}SingleCommand")
 
     activeFile: ->
       @_activeFile ||= atom.project.relativize(atom.workspace.getActiveEditor().buffer.file.path)

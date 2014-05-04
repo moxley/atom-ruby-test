@@ -20,6 +20,7 @@ class RubyTestView extends View
     atom.workspaceView.command "ruby-test:test-file", => @testFile()
     atom.workspaceView.command "ruby-test:test-single", => @testSingle()
     atom.workspaceView.command "ruby-test:test-previous", => @testPrevious()
+    atom.workspaceView.command "ruby-test:test-all", => @testAll()
     new ResizeHandle(@)
 
   # Returns an object that can be retrieved when package is activated
@@ -44,6 +45,9 @@ class RubyTestView extends View
 
   testSingle: ->
     @runTest(testScope: "single")
+
+  testAll: ->
+    @runTest(testScope: "all")
 
   testPrevious: ->
     return unless @runner

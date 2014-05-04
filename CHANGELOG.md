@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 5.0.0
+
+* Run all tests
+
 ## Version 0.4.1
 
 * Fix output area for resize

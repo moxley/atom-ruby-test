@@ -2,10 +2,13 @@ RubyTestView = require './ruby-test-view'
 
 module.exports =
   configDefaults:
+    testAllCommand: "ruby -I test test"
     testFileCommand: "ruby -I test {relative_path}"
     testSingleCommand: "ruby -I test {relative_path}:{line_number}"
+    rspecAllCommand: "rspec spec"
     rspecFileCommand: "rspec {relative_path}"
     rspecSingleCommand: "rspec {relative_path}:{line_number}"
+    cucumberAllCommand: "cucumber features"
     cucumberFileCommand: "cucumber {relative_path}"
     cucumberSingleCommand: "cucumber {relative_path}:{line_number}"
 

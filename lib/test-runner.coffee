@@ -24,6 +24,8 @@ module.exports =
     command: =>
       cmd = if @params.testScope == "single"
           @testParams.testSingleCommand()
+        else if @params.testScope == "all"
+          @testParams.testAllCommand()
         else
           @testParams.testFileCommand()
       cmd.replace('{relative_path}', @testParams.activeFile()).
