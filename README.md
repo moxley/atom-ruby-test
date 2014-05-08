@@ -25,6 +25,7 @@ Open the test file you want to run, then issue one of the following:
 
 ## Features
 
+* Run all the tests in the project
 * Run the tests for current test file
 * Run single test at cursor
 * Run previous test
