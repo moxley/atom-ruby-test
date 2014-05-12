@@ -9,8 +9,11 @@ module.exports =
       @panelBody = @view.find('.panel-body')
 
     resizeToFitContent: =>
-      @view.height(1)
-      @view.height(Math.max(@view.outerHeight(), 40))
+      if @view.height() > Math.min(@view.outerHeight(), 40)
+        @view.height(1)
+        @view.height(Math.max(@view.outerHeight(), 40))
+      else
+        @view.height(Math.max(@view.outerHeight(), 235))
 
     resizeTreeView: (_arg) =>
       workspaceHeight = $('.workspace').outerHeight()
