@@ -17,7 +17,7 @@ module.exports =
 
     resizeTreeView: (_arg) =>
       workspaceHeight = $('.workspace').outerHeight()
-      @view.height(workspaceHeight - _arg.pageY)
+      @view.height(workspaceHeight - _arg.pageY - 28)
 
     resizeStarted: =>
       console.log "resizeStarted"
