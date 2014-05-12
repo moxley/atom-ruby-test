@@ -14,9 +14,7 @@ module.exports =
 
     resizeTreeView: (_arg) =>
       workspaceHeight = $('.workspace').outerHeight()
-      statusBarHeight = $('.status-bar').outerHeight()
-      testBarHeight = $('.ruby-test .panel-heading').outerHeight()
-      @panelBody.height(workspaceHeight - _arg.pageY - statusBarHeight - testBarHeight - 28)
+      @view.height(workspaceHeight - _arg.pageY)
 
     resizeStarted: =>
       console.log "resizeStarted"
