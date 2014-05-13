@@ -3,6 +3,7 @@
 ## Version 5.0.0
 
 * Run all tests
+* Fix always show spinner when tests start
 
 ## Version 0.4.1
 

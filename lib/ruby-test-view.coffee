@@ -59,6 +59,7 @@ class RubyTestView extends View
     params = _.extend({}, @testRunnerParams(), overrideParams || {})
     @runner = new TestRunner(params)
     @runner.run()
+    @spinner.show()
 
   newTestView: ->
     @output = ''
