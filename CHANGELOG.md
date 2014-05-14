@@ -1,8 +1,9 @@
 # Change Log
 
-## Version 5.0.0
+## Version 0.5.0
 
 * Run all tests
+* Auto scroll to bottom of results
 * Fix always show spinner when tests start
 * Fix double-click panel resize
 
