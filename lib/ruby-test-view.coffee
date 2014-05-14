@@ -90,3 +90,4 @@ class RubyTestView extends View
 
   flush: ->
     @results.text(@output)
+    @results.parent().scrollTop(@results.innerHeight())
