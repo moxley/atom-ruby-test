@@ -12,12 +12,13 @@ Click the `Install` button.
 
 ## Configure
 
-![Ruby Test Settings view](http://cl.ly/image/1b1A0B3o3h1b/ruby-test-settings.png)
+![Ruby Test Settings view](http://cl.ly/image/1l3H0g1C1J3g/ruby-test-settings.png)
 
 ## Run
 
 Open the test file you want to run, then issue one of the following:
 
+* `cmd-ctrl-y` - Run all the test files
 * `cmd-ctrl-t` - Run the current test file
 * `cmd-ctrl-r` - Run the test at the current line in test file
 * `cmd-ctrl-e` - Re-run the previous test (doesn't need to have the test file active)
