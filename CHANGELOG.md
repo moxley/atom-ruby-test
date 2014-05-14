@@ -4,6 +4,7 @@
 
 * Run all tests
 * Fix always show spinner when tests start
+* Fix double-click panel resize
 
 ## Version 0.4.1
 
