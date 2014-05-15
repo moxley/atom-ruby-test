@@ -13,12 +13,13 @@ describe "ResizeHandle", ->
   describe "when the resize handle is double clicked", ->
     beforeEach ->
       @view.showPanel()
-      @view.height(10).find('.ruby-test').height(100)
+      @panelBody = @view.find('.panel-body')
+      @panelBody.height(10)
 
     it "sets the height of the panel to be the height of the content", ->
-      expect(@view.height()).toBe(10)
+      @view.results.text("line1\nline2\nline3\nline4")
       @view.find('.ruby-test-resize-handle').trigger('dblclick')
-      expect(@view.height()).toBeGreaterThan(10);
-      @view.height(1000)
+      expect(@panelBody.height()).toBeGreaterThan(10);
+      @panelBody.height(1000)
       @view.find('.ruby-test-resize-handle').trigger('dblclick')
       expect(@view.height()).toBeLessThan(1000)
