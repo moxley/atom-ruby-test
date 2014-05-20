@@ -14,7 +14,7 @@ class RubyTestView extends View
         @span outlet: 'header'
       @div class: "panel-body", =>
         @div class: 'ruby-test-spinner', 'Starting...'
-        @div "", outlet: 'results'
+        @pre "", outlet: 'results'
 
   initialize: (serializeState) ->
     atom.workspaceView.command "ruby-test:toggle", => @toggle()
@@ -86,7 +86,7 @@ class RubyTestView extends View
   write: (str) =>
     @spinner.hide() if @spinner
     @output ||= ''
-    convert = new Convert({newline: true})
+    convert = new Convert()
     converted = convert.toHtml(str)
     @output += converted
     @flush()
