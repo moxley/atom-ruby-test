@@ -2,6 +2,7 @@ _ = require 'underscore-plus'
 {View} = require 'atom'
 TestRunner = require './test-runner'
 ResizeHandle = require './resize-handle'
+Convert = require 'ansi-to-html'
 
 module.exports =
 class RubyTestView extends View
@@ -13,7 +14,7 @@ class RubyTestView extends View
         @span outlet: 'header'
       @div class: "panel-body", =>
         @div class: 'ruby-test-spinner', 'Starting...'
-        @pre "", outlet: 'results'
+        @div "", outlet: 'results'
 
   initialize: (serializeState) ->
     atom.workspaceView.command "ruby-test:toggle", => @toggle()
@@ -85,9 +86,11 @@ class RubyTestView extends View
   write: (str) =>
     @spinner.hide() if @spinner
     @output ||= ''
-    @output += str
+    convert = new Convert({newline: true})
+    converted = convert.toHtml(str)
+    @output += converted
     @flush()
 
   flush: ->
-    @results.text(@output)
+    @results.html(@output)
     @results.parent().scrollTop(@results.innerHeight())

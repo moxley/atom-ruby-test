@@ -19,7 +19,8 @@
     "atom": ">0.50.0"
   },
   "dependencies": {
-    "underscore-plus": "^1.0.6"
+    "underscore-plus": "^1.0.6",
+    "ansi-to-html": "^0.1"
   },
   "keywords": [
     "ruby",
