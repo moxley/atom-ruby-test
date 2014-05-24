@@ -86,7 +86,7 @@ class RubyTestView extends View
   write: (str) =>
     @spinner.hide() if @spinner
     @output ||= ''
-    convert = new Convert()
+    convert = new Convert(escapeXML: true)
     converted = convert.toHtml(str)
     @output += converted
     @flush()
