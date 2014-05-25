@@ -3,7 +3,7 @@
 Run Ruby tests, Rspec examples, and Cucumber features from Atom,
 quickly and easily.
 
-![Running tests is quick and easy](http://cl.ly/image/0W0l0Q0u3m3k/ruby-test.gif)
+![Running tests is quick and easy](http://cl.ly/image/300n2g101z0y/ruby-test6.gif)
 
 ## Install
 
@@ -33,6 +33,13 @@ Open the test file you want to run, then issue one of the following:
 * Configure the shell commands that run the tests
 * Supports Ruby managers, like `rvm` and `rbenv`
 * Supports TestUnit, Rspec, and Cucumber
+
+## How To
+
+### Zeus + RSpec color output
+
+* In rspec_helper.rb, add `config.tty = true` to the
+  `RSpec.configure do |config| ...` block
 
 ## Contributing
 

@@ -1,5 +1,9 @@
 # Change Log
 
+## Version
+
+* ANSI color support
+
 ## Version 0.5.0
 
 * Run all tests
