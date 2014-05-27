@@ -1,6 +1,6 @@
 # Change Log
 
-## Version
+## Version 0.6.0
 
 * ANSI color support
 
