@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 0.6.1
+
+* Unbuffered, real-time output
+
 ## Version 0.6.0
 
 * ANSI color support
