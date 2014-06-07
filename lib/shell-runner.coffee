@@ -1,4 +1,4 @@
-{BufferedProcess} = require 'atom'
+ChildProcess = require 'child_process'
 
 module.exports =
   class ShellRunner
@@ -8,19 +8,20 @@ module.exports =
     initialize: (params) ->
       @params = params || throw "Missing ::params argument"
       @write = params.write || throw "Missing ::write parameter"
+      @write = (data) => params.write "#{data}"
       @exit = params.exit || throw "Missing ::exit parameter"
       @command = params.command || throw "Missing ::command parameter"
 
     run: ->
       p = @newProcess()
       fullCommand = "cd #{@params.cwd()} && #{@params.command()}; exit\n"
-      p.process.stdin.write fullCommand
+      p.stdin.write fullCommand
 
     newProcess: ->
-      new BufferedProcess
-        command: 'bash',
-        args:    ['-l'],
-        stdout:  @write
-        stderr:  @write
-        exit:    =>
-          @params.exit()
+      spawn = ChildProcess.spawn
+      terminal = spawn('bash', ['-l'])
+      terminal.on 'close', =>
+        @params.exit()
+      terminal.stdout.on 'data', @write
+      terminal.stderr.on 'data', @write
+      terminal
