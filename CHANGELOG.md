@@ -1,6 +1,6 @@
 # Change Log
 
-## Version 0.6.1
+## Version 0.7.0
 
 * Unbuffered, real-time output
 
