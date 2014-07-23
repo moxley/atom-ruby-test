@@ -46,7 +46,7 @@ describe "SourceInfo", ->
   describe "::currentLine", ->
     it "is the cursor screenRow() plus 1", ->
       cursor =
-        getScreenRow: ->
+        getBufferRow: ->
           99
       @editor.getCursor = -> cursor
       expect(@params.currentLine()).toBe(100)
