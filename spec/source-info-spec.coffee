@@ -44,7 +44,7 @@ describe "SourceInfo", ->
       expect(@params.activeFile()).toBe("fooDirectory/foo_test.rb")
 
   describe "::currentLine", ->
-    it "is the cursor screenRow() plus 1", ->
+    it "is the cursor getBufferRow() plus 1", ->
       cursor =
         getBufferRow: ->
           99
