@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 0.8.0
+
+* Fix query for current row
+
 ## Version 0.7.0
 
 * Unbuffered, real-time output
