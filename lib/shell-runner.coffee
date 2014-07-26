@@ -13,15 +13,14 @@ module.exports =
       @command = params.command || throw "Missing ::command parameter"
 
     run: ->
-      p = @newProcess()
       fullCommand = "cd #{@params.cwd()} && #{@params.command()}; exit\n"
-      p.stdin.write fullCommand
+      @process = @newProcess()
+      @process.stdin.write fullCommand
 
     newProcess: ->
-      spawn = ChildProcess.spawn
-      terminal = spawn('bash', ['-l'])
-      terminal.on 'close', =>
+      process = ChildProcess.spawn('bash', ['-l'])
+      process.on 'close', =>
         @params.exit()
-      terminal.stdout.on 'data', @write
-      terminal.stderr.on 'data', @write
-      terminal
+      process.stdout.on 'data', @write
+      process.stderr.on 'data', @write
+      process
