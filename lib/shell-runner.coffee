@@ -17,9 +17,14 @@ module.exports =
       @process = @newProcess()
       @process.stdin.write fullCommand
 
+    kill: ->
+      console.log("Sending kill")
+      @process.kill('SIGKILL')
+
     newProcess: ->
       process = ChildProcess.spawn('bash', ['-l'])
       process.on 'close', =>
+        console.log "Closing"
         @params.exit()
       process.stdout.on 'data', @write
       process.stderr.on 'data', @write
