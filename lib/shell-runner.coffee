@@ -1,4 +1,4 @@
-{BufferedProcess} = require 'atom'
+BufferedProcess = require './buffered-process'
 
 module.exports =
   class ShellRunner
@@ -30,10 +30,13 @@ module.exports =
     stdout: (output) =>
       @params.write output
 
+    stderr: (output) =>
+      @params.write output
+
     newProcess: (testCommand) ->
       command = 'bash'
       args = ['-c', testCommand]
       options = { cwd: @params.cwd }
-      params = { command, args, options, @stdout, @stdout, @exit }
+      params = { command, args, options, @stdout, @stderr, @exit }
       process = new @processor params
       process
