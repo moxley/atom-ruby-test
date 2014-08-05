@@ -1,7 +1,12 @@
 ChildProcess = require 'child_process'
+{BufferedProcess} = require 'atom'
+
+stdout = (output) -> console.log(output)
 
 module.exports =
   class ShellRunner
+    processor: BufferedProcess
+
     constructor: (params) ->
       @initialize(params)
 
@@ -14,18 +19,21 @@ module.exports =
 
     run: ->
       fullCommand = "cd #{@params.cwd()} && #{@params.command()}; exit\n"
-      @process = @newProcess()
-      @process.stdin.write fullCommand
+      @process = @newProcess(fullCommand)
+      # @process.stdin.write fullCommand
 
     kill: ->
       console.log("Sending kill")
       @process.kill('SIGKILL')
 
-    newProcess: ->
-      process = ChildProcess.spawn('bash', ['-l'])
-      process.on 'close', =>
-        console.log "Closing"
-        @params.exit()
-      process.stdout.on 'data', @write
-      process.stderr.on 'data', @write
+    exit: (code) ->
+      console.log "Exited with #{code}"
+      @params.exit()
+
+    newProcess: (testCommand) ->
+      # process = ChildProcess.spawn('bash', ['-l'])
+      command = 'bash'
+      args = ['-c', testCommand]
+      options = { cwd: @params.cwd, write: @params.write }
+      process = new @processor { command, args, options, stdout, stdout, @exit }
       process
