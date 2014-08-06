@@ -21,7 +21,7 @@ module.exports =
 
     kill: ->
       @killed = true
-      if @process
+      if @process?
         console.log("Sending kill")
         @process.kill('SIGKILL')
 
@@ -30,6 +30,8 @@ module.exports =
       process.on 'close', =>
         console.log "Closing"
         @params.exit()
+      process.on 'exit', (code, signal) =>
+        console.log "Exited with code(#{code}) and signal: #{signal}"
       process.stdout.on 'data', @write
       process.stderr.on 'data', @write
       process
