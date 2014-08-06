@@ -8,7 +8,9 @@ module.exports =
     initialize: (params) ->
       @params = params || throw "Missing ::params argument"
       @write = params.write || throw "Missing ::write parameter"
-      @write = (data) => params.write "#{data}"
+      @write = (data) =>
+        unless @killed
+          params.write "#{data}"
       @exit = params.exit || throw "Missing ::exit parameter"
       @command = params.command || throw "Missing ::command parameter"
 
@@ -18,8 +20,10 @@ module.exports =
       @process.stdin.write fullCommand
 
     kill: ->
-      console.log("Sending kill")
-      @process.kill('SIGKILL')
+      @killed = true
+      if @process
+        console.log("Sending kill")
+        @process.kill('SIGKILL')
 
     newProcess: ->
       process = ChildProcess.spawn('bash', ['-l'])
