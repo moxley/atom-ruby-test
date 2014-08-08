@@ -52,10 +52,12 @@ class RubyTestView extends View
 
   testPrevious: ->
     return unless @runner
+    atom.workspace.getActiveEditor().save()
     @newTestView()
     @runner.run()
 
   runTest: (overrideParams) ->
+    atom.workspace.getActiveEditor().save()
     @newTestView()
     params = _.extend({}, @testRunnerParams(), overrideParams || {})
     @runner = new TestRunner(params)
