@@ -28,8 +28,6 @@ module.exports =
       process = ChildProcess.spawn('bash', ['-l'])
       process.on 'close', =>
         @params.exit()
-      process.on 'exit', (code, signal) =>
-        @params.exit()
       process.stdout.on 'data', @write
       process.stderr.on 'data', @write
       process
