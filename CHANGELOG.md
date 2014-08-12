@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 0.9.0
+
+* Cancel running test with cmd+ctrl+c
+
 ## Version 0.8.0
 
 * Fix query for current row
