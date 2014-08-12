@@ -13,4 +13,4 @@
   'cmd-ctrl-t': 'ruby-test:test-file'
   'cmd-ctrl-r': 'ruby-test:test-single'
   'cmd-ctrl-e': 'ruby-test:test-previous'
-  'ctrl-c':     'ruby-test:cancel'
+  'cmd-ctrl-c': 'ruby-test:cancel'

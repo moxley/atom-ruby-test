@@ -22,16 +22,14 @@ module.exports =
     kill: ->
       @killed = true
       if @process?
-        console.log("Sending kill")
         @process.kill('SIGKILL')
 
     newProcess: ->
       process = ChildProcess.spawn('bash', ['-l'])
       process.on 'close', =>
-        console.log "Closing"
         @params.exit()
       process.on 'exit', (code, signal) =>
-        console.log "Exited with code(#{code}) and signal: #{signal}"
+        @params.exit()
       process.stdout.on 'data', @write
       process.stderr.on 'data', @write
       process
