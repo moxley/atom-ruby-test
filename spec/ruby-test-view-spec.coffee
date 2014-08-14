@@ -5,8 +5,10 @@ TestRunner = require '../lib/test-runner'
 
 describe "RubyTestView", ->
   beforeEach ->
+    fileOpened = false
     atom.workspaceView = new WorkspaceView()
-    atom.workspaceView.openSync('/tmp/text.txt')
+    atom.workspaceView.open('/tmp/text.txt').then -> fileOpened = true
+    waitsFor -> fileOpened is true
 
   describe "::testFile", ->
     it "instantiates TestRunner, and calls ::run on it", ->
