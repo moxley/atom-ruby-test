@@ -3,6 +3,7 @@
 ## Version 0.9.0
 
 * Cancel running test with cmd+ctrl+c
+* Save current file before running test
 
 ## Version 0.8.0
 
