@@ -17,6 +17,8 @@ the package: `cmd-ctrl-x`.
 
 ![Ruby Test Settings view](http://cl.ly/image/1l3H0g1C1J3g/ruby-test-settings.png)
 
+**Shell**: executable or path to shell (e.g. `fish`, `/bin/zsh`)
+
 ## Run
 
 Open the test file you want to run, then issue one of the following:
