@@ -100,3 +100,5 @@ class RubyTestView extends View
 
   cancelTest: ->
     @runner.cancel()
+    @spinner?.hide()
+    @write('\nTests canceled')
