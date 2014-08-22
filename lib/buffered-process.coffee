@@ -38,7 +38,7 @@ class BufferedProcess
   #             is sent in a final call (optional).
   #   :exit - The callback {Function} which receives a single argument
   #           containing the exit status (optional).
-  constructor: ({command, args, options, stdout, stderr, exit}={}) ->
+  constructor: ({command, args, options, stdout, stderr, exit}={}, outputCharacters=false) ->
     options ?= {}
     # Related to joyent/node#2318
     if process.platform is "win32"
@@ -76,13 +76,13 @@ class BufferedProcess
 
     if stdout
       stdoutClosed = false
-      @bufferStream @process.stdout, stdout, ->
+      @bufferStream @process.stdout, stdout, outputCharacters, ->
         stdoutClosed = true
         triggerExitCallback()
 
     if stderr
       stderrClosed = false
-      @bufferStream @process.stderr, stderr, ->
+      @bufferStream @process.stderr, stderr, outputCharacters, ->
         stderrClosed = true
         triggerExitCallback()
 
@@ -98,17 +98,20 @@ class BufferedProcess
   # stream - The Stream to read from.
   # onLines - The callback to call with each line of data.
   # onDone - The callback to call when the stream has closed.
-  bufferStream: (stream, onLines, onDone) ->
+  bufferStream: (stream, onLines, outputCharacters, onDone) ->
     stream.setEncoding('utf8')
     buffered = ''
 
     stream.on 'data', (data) =>
       return if @killed
-      buffered += data
-      lastNewlineIndex = buffered.lastIndexOf('\n')
-      if lastNewlineIndex isnt -1
-        onLines(buffered.substring(0, lastNewlineIndex + 1))
-        buffered = buffered.substring(lastNewlineIndex + 1)
+      if !outputCharacters
+        buffered += data
+        lastNewlineIndex = buffered.lastIndexOf('\n')
+        if lastNewlineIndex isnt -1
+          onLines(buffered.substring(0, lastNewlineIndex + 1))
+          buffered = buffered.substring(lastNewlineIndex + 1)
+      else
+        onLines(data)
 
     stream.on 'close', =>
       return if @killed

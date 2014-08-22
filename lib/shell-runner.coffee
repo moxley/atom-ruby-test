@@ -18,13 +18,8 @@ module.exports =
       @process = @newProcess(fullCommand)
 
     kill: ->
-      @killed = true
       if @process?
         @process.kill('SIGKILL')
-
-    exit: (code) =>
-      console.log "Ruby Test exited with #{code}"
-      @params.exit()
 
     stdout: (output) =>
       @params.write output
@@ -37,5 +32,6 @@ module.exports =
       args = ['-c', testCommand]
       options = { cwd: @params.cwd }
       params = { command, args, options, @stdout, @stderr, @exit }
-      process = new @processor params
+      outputCharacters = true
+      process = new @processor params, outputCharacters
       process
