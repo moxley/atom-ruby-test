@@ -3,6 +3,7 @@ ShellRunner = require './../lib/shell-runner'
 class SourceInfo
   file: 'Hello, World!'
   output: ''
+  currentShell: "bash"
   write: (str) =>
     @output += str
   exit: =>

@@ -51,6 +51,10 @@ describe "SourceInfo", ->
       @editor.getCursor = -> cursor
       expect(@params.currentLine()).toBe(100)
 
+  describe "::currentShell", ->
+    it "when ruby-test.shell is null", ->
+      expect(@params.currentShell).toBe('bash')
+
   afterEach ->
     delete atom.project
     for framework in @frameworks
