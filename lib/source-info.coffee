@@ -7,6 +7,8 @@ module.exports =
       spec:    'rspec'
       feature: 'cucumber'
 
+    currentShell: atom.config.get('ruby-test.shell') || 'bash'
+
     cwd: ->
       atom.project.getPath()
 

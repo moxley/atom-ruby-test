@@ -12,6 +12,7 @@ module.exports =
       @write = params.write || throw "Missing ::write parameter"
       @exit = params.exit || throw "Missing ::exit parameter"
       @command = params.command || throw "Missing ::command parameter"
+      @currentShell = params.currentShell || throw "Missing ::currentShell parameter"
 
     run: ->
       fullCommand = "cd #{@params.cwd()} && #{@params.command()}; exit\n"
@@ -28,7 +29,7 @@ module.exports =
       @params.write output
 
     newProcess: (testCommand) ->
-      command = 'bash'
+      command = @currentShell
       args = ['-c', testCommand]
       options = { cwd: @params.cwd }
       params = { command, args, options, @stdout, @stderr, @exit }
