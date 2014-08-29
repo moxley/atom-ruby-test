@@ -2,6 +2,7 @@
 
 ## Version 0.9.0
 
+* Configurable shell. Supports bash, zsh.
 * Cancel running test with cmd+ctrl+c
 * Save current file before running test
 
