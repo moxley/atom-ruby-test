@@ -30,7 +30,7 @@ module.exports =
 
     newProcess: (testCommand) ->
       command = @currentShell
-      args = ['-c', testCommand]
+      args = ['-c', '-l', testCommand]
       options = { cwd: @params.cwd }
       params = { command, args, options, @stdout, @stderr, @exit }
       outputCharacters = true
