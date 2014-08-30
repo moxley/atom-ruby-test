@@ -20,7 +20,7 @@ module.exports =
       exit:    @params.exit
       command: @command
       cwd:     @testParams.cwd
-      currentShell: @testParams.currentShell
+      currentShell: @testParams.currentShell()
 
     command: =>
       cmd = if @params.testScope == "single"
