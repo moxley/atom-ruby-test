@@ -1,5 +1,10 @@
 # Change Log
 
+## Version 0.9.1
+
+* Fix switching shells
+* Fix shell startup invocation
+
 ## Version 0.9.0
 
 * Configurable shell. Supports bash, zsh.
