@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 0.9.2
+
+* Linux key bindings
+
 ## Version 0.9.1
 
 * Fix switching shells
