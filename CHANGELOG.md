@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 0.9.3
+
+* Cucumber color output
+
 ## Version 0.9.2
 
 * Linux key bindings
