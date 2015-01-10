@@ -8,9 +8,9 @@ module.exports =
     rspecAllCommand: "rspec --tty spec"
     rspecFileCommand: "rspec --tty {relative_path}"
     rspecSingleCommand: "rspec --tty {relative_path}:{line_number}"
-    cucumberAllCommand: "cucumber features"
-    cucumberFileCommand: "cucumber {relative_path}"
-    cucumberSingleCommand: "cucumber {relative_path}:{line_number}"
+    cucumberAllCommand: "cucumber --color features"
+    cucumberFileCommand: "cucumber --color {relative_path}"
+    cucumberSingleCommand: "cucumber --color {relative_path}:{line_number}"
     shell: "bash"
 
   rubyTestView: null
