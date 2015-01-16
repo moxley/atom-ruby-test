@@ -53,7 +53,7 @@ describe "SourceInfo", ->
 
   describe "::currentShell", ->
     it "when ruby-test.shell is null", ->
-      expect(@params.currentShell).toBe('bash')
+      expect(@params.currentShell()).toBe('bash')
 
   afterEach ->
     delete atom.project
