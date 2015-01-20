@@ -7,7 +7,7 @@
 
 # For more detailed documentation see
 # https://atom.io/docs/latest/advanced/keymaps
-'.platform-darwin .workspace':
+'.platform-darwin atom-workspace':
   'cmd-ctrl-x': 'ruby-test:toggle'
   'cmd-ctrl-y': 'ruby-test:test-all'
   'cmd-ctrl-t': 'ruby-test:test-file'
@@ -15,7 +15,7 @@
   'cmd-ctrl-e': 'ruby-test:test-previous'
   'cmd-ctrl-c': 'ruby-test:cancel'
   
-'.platform-linux .workspace':
+'.platform-linux atom-workspace':
   'ctrl-shift-c': 'ruby-test:cancel'
   'ctrl-shift-e': 'ruby-test:test-previous'
   'ctrl-shift-r': 'ruby-test:test-single'
