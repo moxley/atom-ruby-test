@@ -1,5 +1,10 @@
 # Change Log
 
+## Version 0.9.4
+
+* Upgrade from deprecated style API (#36)
+* Fix failed spec (#35)
+
 ## Version 0.9.3
 
 * Cucumber color output
