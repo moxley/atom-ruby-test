@@ -1,4 +1,3 @@
-{WorkspaceView} = require 'atom'
 RubyTest = require '../lib/ruby-test'
 
 # Use the command `window:run-package-specs` (cmd-alt-ctrl-p) to run specs.
@@ -8,23 +7,24 @@ RubyTest = require '../lib/ruby-test'
 
 describe "RubyTest", ->
   activationPromise = null
+  workspaceElement = null
 
   beforeEach ->
-    atom.workspaceView = new WorkspaceView
+    workspaceElement = atom.views.getView(atom.workspace)
     activationPromise = atom.packages.activatePackage('ruby-test')
 
   describe "when the ruby-test:toggle event is triggered", ->
     it "attaches and then detaches the view", ->
-      expect(atom.workspaceView.find('.ruby-test')).not.toExist()
+      expect(workspaceElement.querySelector('.ruby-test')).not.toExist()
 
       # This is an activation event, triggering it will cause the package to be
       # activated.
-      atom.workspaceView.trigger 'ruby-test:toggle'
+      atom.commands.dispatch workspaceElement, 'ruby-test:toggle'
 
       waitsForPromise ->
         activationPromise
 
       runs ->
-        expect(atom.workspaceView.find('.ruby-test')).toExist()
-        atom.workspaceView.trigger 'ruby-test:toggle'
-        expect(atom.workspaceView.find('.ruby-test')).not.toExist()
+        expect(workspaceElement.querySelector('.ruby-test')).toExist()
+        atom.commands.dispatch workspaceElement, 'ruby-test:toggle'
+        expect(workspaceElement.querySelector('.ruby-test')).not.toExist()
