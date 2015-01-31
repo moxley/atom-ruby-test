@@ -20,7 +20,8 @@
   },
   "dependencies": {
     "underscore-plus": "^1.0.6",
-    "ansi-to-html": "^0.2"
+    "ansi-to-html": "^0.2",
+    "atom-space-pen-views": "^2.0.3"
   },
   "keywords": [
     "ruby",

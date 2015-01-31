@@ -1,5 +1,6 @@
 _ = require 'underscore-plus'
-{$$, WorkspaceView} = require 'atom'
+{$$} = require 'atom-space-pen-views'
+{WorkspaceView} = require 'atom'
 RubyTestView = require '../lib/ruby-test-view'
 TestRunner = require '../lib/test-runner'
 

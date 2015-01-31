@@ -1,5 +1,5 @@
 _ = require 'underscore-plus'
-{View} = require 'atom'
+{View} = require 'atom-space-pen-views'
 TestRunner = require './test-runner'
 ResizeHandle = require './resize-handle'
 Convert = require 'ansi-to-html'

@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 0.9.5
+
+* Upgrade to Atom API 1.0
+
 ## Version 0.9.4
 
 * Upgrade from deprecated style API (#36)
