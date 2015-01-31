@@ -6,13 +6,15 @@
   "main": "./lib/ruby-test",
   "version": "0.9.4",
   "description": "Run Ruby tests, Rspec examples, and Cucumber features from Atom",
-  "activationEvents": [
-    "ruby-test:toggle",
-    "ruby-test:test-file",
-    "ruby-test:test-single",
-    "ruby-test:test-previous",
-    "ruby-test:test-all"
-  ],
+  "activationCommands": {
+    "atom-workspace": [
+      "ruby-test:toggle",
+      "ruby-test:test-file",
+      "ruby-test:test-single",
+      "ruby-test:test-previous",
+      "ruby-test:test-all"
+    ]
+  },
   "repository": "https://github.com/moxley/atom-ruby-test",
   "license": "MIT",
   "engines": {
