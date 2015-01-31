@@ -3,8 +3,8 @@ SourceInfo = require '../lib/source-info'
 describe "SourceInfo", ->
   beforeEach ->
     project =
-      getPath: ->
-        "fooPath"
+      getPaths: ->
+        ["fooPath"]
       relativize: (filePath) ->
         "fooDirectory/#{filePath}"
     atom.project = project
@@ -24,7 +24,7 @@ describe "SourceInfo", ->
     @params = new SourceInfo()
 
   describe "::cwd", ->
-    it "is atom.project.getPath()", ->
+    it "is atom.project.getPaths()[0]", ->
       expect(@params.cwd()).toBe("fooPath")
 
   describe "::testFileCommand", ->

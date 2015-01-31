@@ -11,7 +11,7 @@ module.exports =
       atom.config.get('ruby-test.shell') || 'bash'
 
     cwd: ->
-      atom.project.getPath()
+      atom.project.getPaths()[0]
 
     testFileCommand: ->
       atom.config.get("ruby-test.#{@testFramework()}FileCommand")
