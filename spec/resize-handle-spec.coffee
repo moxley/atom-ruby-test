@@ -1,4 +1,3 @@
-{WorkspaceView} = require 'atom'
 ResizeHandle = require '../lib/resize-handle'
 RubyTestView = require '../lib/ruby-test-view'
 
@@ -6,7 +5,6 @@ describe "ResizeHandle", ->
   activationPromise = null
 
   beforeEach ->
-    atom.workspaceView = new WorkspaceView()
     @view = new RubyTestView
     @resize = new ResizeHandle(@view)
 
