@@ -5,50 +5,99 @@ TestRunner = require '../lib/test-runner'
 
 describe "RubyTestView", ->
   activeEditor = null
+  testRunnerInitializeParams = null
+  view = null
+
+  spyOnTestRunnerInitialize = ->
+    spyOn(activeEditor, 'save')
+    spyOn(TestRunner.prototype, 'initialize').andCallFake (params) ->
+      testRunnerInitializeParams = params
+    spyOn(TestRunner.prototype, 'run').andReturn(null)
+
+  validateTestRunnerInitialize = ->
+    expect(testRunnerInitializeParams).toBeDefined()
+    expect(testRunnerInitializeParams).not.toBe(null)
+    expect(testRunnerInitializeParams.write).toEqual(view.write)
+    expect(testRunnerInitializeParams.exit).toEqual(view.onTestRunEnd)
+    expect(testRunnerInitializeParams.setTestInfo).toEqual(view.setTestInfo)
+
+  spyOnTestRunnerRun = ->
+    spyOn(activeEditor, 'save')
+    spyOn(TestRunner.prototype, 'initialize').andCallThrough()
+    spyOn(TestRunner.prototype, 'run').andCallThrough()
+    spyOn(TestRunner.prototype, 'command').andReturn 'fooTestCommand'
+
+  validateTestRunnerRun = ->
+    expect(TestRunner.prototype.initialize).toHaveBeenCalled()
+    expect(TestRunner.prototype.run).toHaveBeenCalledWith()
+    expect(activeEditor.save).toHaveBeenCalled()
 
   beforeEach ->
     fileOpened = false
+    testRunnerInitializeParams = null
+    view = null
 
     atom.workspace.open('/tmp/text.txt').then (editor) ->
       activeEditor = editor
       fileOpened = true
 
-    # editor = atom.workspace.getActiveTextEditor()
-    # editor.open('/tmp/text.txt').then -> fileOpened = true
-
     waitsFor -> fileOpened is true
 
+  describe "::testAll", ->
+    it "instantiates TestRunner with specific arguments", ->
+      spyOnTestRunnerInitialize()
+
+      view = new RubyTestView()
+      view.testAll()
+
+      validateTestRunnerInitialize()
+      expect(testRunnerInitializeParams.testScope).toEqual('all')
+
+    it "instantiates TestRunner and calls ::run on it", ->
+      spyOnTestRunnerRun()
+
+      @view = new RubyTestView()
+      @view.testAll()
+
+      validateTestRunnerRun()
+
   describe "::testFile", ->
-    it "instantiates TestRunner, and calls ::run on it", ->
-      spyOn(activeEditor, 'save')
-      spyOn(TestRunner.prototype, 'initialize').andCallThrough()
-      spyOn(TestRunner.prototype, 'run').andCallThrough()
-      spyOn(TestRunner.prototype, 'command').andReturn 'fooTestCommand'
+    it "instantiates TestRunner with specific arguments", ->
+      spyOnTestRunnerInitialize()
+
+      view = new RubyTestView()
+      view.testFile()
+
+      validateTestRunnerInitialize()
+      expect(testRunnerInitializeParams.testScope).not.toBeDefined()
+
+    it "calls ::run on the TestRunner instance", ->
+      spyOnTestRunnerRun()
 
       @view = new RubyTestView()
       spyOn(@view, 'setTestInfo').andCallThrough()
       @view.testFile()
 
-      expect(TestRunner.prototype.initialize).toHaveBeenCalledWith(@view.testRunnerParams())
-      expect(TestRunner.prototype.run).toHaveBeenCalled()
+      validateTestRunnerRun()
       expect(@view.setTestInfo).toHaveBeenCalled()
-      # expect(@view.hasParent()).toBe(true)
-      expect(activeEditor.save).toHaveBeenCalled()
 
   describe "::testSingle", ->
-    it "intantiates TestRunner and calls ::run on it with specific arguments", ->
-      spyOn(activeEditor, 'save')
-      spyOn(TestRunner.prototype, 'initialize').andCallThrough()
-      spyOn(TestRunner.prototype, 'run').andCallThrough()
-      spyOn(TestRunner.prototype, 'command').andReturn 'fooTestCommand'
+    it "instantiates TestRunner with specific arguments", ->
+      spyOnTestRunnerInitialize()
+
+      view = new RubyTestView()
+      view.testSingle()
+
+      validateTestRunnerInitialize()
+      expect(testRunnerInitializeParams.testScope).toEqual('single')
+
+    it "instantiates TestRunner and calls ::run on it", ->
+      spyOnTestRunnerRun()
 
       @view = new RubyTestView()
       @view.testSingle()
 
-      params = _.extend({}, @view.testRunnerParams(), {testScope: "single"})
-      expect(TestRunner.prototype.initialize).toHaveBeenCalledWith(params)
-      expect(TestRunner.prototype.run).toHaveBeenCalled()
-      expect(activeEditor.save).toHaveBeenCalled()
+      validateTestRunnerRun()
 
   describe "::testPrevious", ->
     it "intantiates TestRunner and calls ::run on it with specific arguments", ->
