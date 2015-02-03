@@ -33,18 +33,6 @@ module.exports =
       type: 'string',
       default: "bash"
 
-  configDefaults:
-    testAllCommand: "ruby -I test test"
-    testFileCommand: "ruby -I test {relative_path}"
-    testSingleCommand: "ruby -I test {relative_path}:{line_number}"
-    rspecAllCommand: "rspec --tty spec"
-    rspecFileCommand: "rspec --tty {relative_path}"
-    rspecSingleCommand: "rspec --tty {relative_path}:{line_number}"
-    cucumberAllCommand: "cucumber --color features"
-    cucumberFileCommand: "cucumber --color {relative_path}"
-    cucumberSingleCommand: "cucumber --color {relative_path}:{line_number}"
-    shell: "bash"
-
   rubyTestView: null
 
   activate: (state) ->
