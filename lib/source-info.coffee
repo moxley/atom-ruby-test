@@ -1,6 +1,8 @@
 fs = require('fs')
+Utility = require './utility'
 
 module.exports =
+  # Provides information about the source code being tested
   class SourceInfo
     frameworkLookup:
       test:    'test'
@@ -24,13 +26,16 @@ module.exports =
       atom.config.get("ruby-test.#{@testFramework()}SingleCommand")
 
     activeFile: ->
-      @_activeFile ||= atom.project.relativize(atom.workspace.getActiveEditor().buffer.file.path)
+      @_activeFile ||= (fp = @filePath()) and atom.project.relativize(fp)
 
     currentLine: ->
       @_currentLine ||= unless @_currentLine
-        editor = atom.workspace.getActiveEditor()
-        cursor = editor.getCursor()
-        cursor.getBufferRow() + 1
+        editor = atom.workspace.getActiveTextEditor()
+        cursor = editor and editor.getCursor()
+        if cursor
+          cursor.getBufferRow() + 1
+        else
+          null
 
     testFramework: ->
       @_testFramework ||= unless @_testFramework
@@ -38,10 +43,13 @@ module.exports =
         @projectType()
 
     fileType: ->
-      @_fileType ||= if matches = @activeFile().match(/_(test|spec)\.rb$/)
-        matches[1]
-      else if matches = @activeFile().match(/\.(feature)$/)
-        matches[1]
+      @_fileType ||= if @_fileType == undefined
+        if not @activeFile()
+          null
+        else if matches = @activeFile().match(/_(test|spec)\.rb$/)
+          matches[1]
+        else if matches = @activeFile().match(/\.(feature)$/)
+          matches[1]
 
     projectType: ->
       if fs.existsSync(atom.project.path + '/test')
@@ -52,3 +60,7 @@ module.exports =
         'cucumber'
       else
         null
+
+    filePath: ->
+      util = new Utility
+      util.filePath()

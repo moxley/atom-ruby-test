@@ -2,6 +2,7 @@ _ = require 'underscore-plus'
 {View} = require 'atom-space-pen-views'
 TestRunner = require './test-runner'
 ResizeHandle = require './resize-handle'
+Utility = require './utility'
 Convert = require 'ansi-to-html'
 
 module.exports =
@@ -53,12 +54,12 @@ class RubyTestView extends View
 
   testPrevious: ->
     return unless @runner
-    atom.workspace.getActiveTextEditor().save()
+    @saveFile()
     @newTestView()
     @runner.run()
 
   runTest: (overrideParams) ->
-    atom.workspace.getActiveTextEditor().save()
+    @saveFile()
     @newTestView()
     params = _.extend({}, @testRunnerParams(), overrideParams || {})
     @runner = new TestRunner(params)
@@ -102,3 +103,7 @@ class RubyTestView extends View
     @runner.cancel()
     @spinner?.hide()
     @write('\nTests canceled')
+
+  saveFile: ->
+    util = new Utility
+    util.saveFile()

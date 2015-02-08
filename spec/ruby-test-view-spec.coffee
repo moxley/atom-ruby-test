@@ -7,6 +7,7 @@ describe "RubyTestView", ->
   activeEditor = null
   testRunnerInitializeParams = null
   view = null
+  fileOpened = false
 
   spyOnTestRunnerInitialize = ->
     spyOn(activeEditor, 'save')
@@ -32,89 +33,111 @@ describe "RubyTestView", ->
     expect(TestRunner.prototype.run).toHaveBeenCalledWith()
     expect(activeEditor.save).toHaveBeenCalled()
 
-  beforeEach ->
-    fileOpened = false
-    testRunnerInitializeParams = null
-    view = null
-
+  setUpActiveEditor = ->
     atom.workspace.open('/tmp/text.txt').then (editor) ->
       activeEditor = editor
       fileOpened = true
-
     waitsFor -> fileOpened is true
 
-  describe "::testAll", ->
-    it "instantiates TestRunner with specific arguments", ->
-      spyOnTestRunnerInitialize()
+  describe "with open editor", ->
+    beforeEach ->
+      fileOpened = false
+      testRunnerInitializeParams = null
+      view = null
+      activeEditor = null
+      setUpActiveEditor()
 
-      view = new RubyTestView()
-      view.testAll()
+    describe "::testAll", ->
+      it "instantiates TestRunner with specific arguments", ->
+        spyOnTestRunnerInitialize()
 
-      validateTestRunnerInitialize()
-      expect(testRunnerInitializeParams.testScope).toEqual('all')
+        view = new RubyTestView()
+        view.testAll()
 
-    it "instantiates TestRunner and calls ::run on it", ->
-      spyOnTestRunnerRun()
+        validateTestRunnerInitialize()
+        expect(testRunnerInitializeParams.testScope).toEqual('all')
 
-      @view = new RubyTestView()
-      @view.testAll()
+      it "instantiates TestRunner and calls ::run on it", ->
+        spyOnTestRunnerRun()
 
-      validateTestRunnerRun()
+        view = new RubyTestView()
+        view.testAll()
 
-  describe "::testFile", ->
-    it "instantiates TestRunner with specific arguments", ->
-      spyOnTestRunnerInitialize()
+        validateTestRunnerRun()
 
-      view = new RubyTestView()
-      view.testFile()
+    describe "::testFile", ->
+      it "instantiates TestRunner with specific arguments", ->
+        spyOnTestRunnerInitialize()
 
-      validateTestRunnerInitialize()
-      expect(testRunnerInitializeParams.testScope).not.toBeDefined()
+        view = new RubyTestView()
+        view.testFile()
 
-    it "calls ::run on the TestRunner instance", ->
-      spyOnTestRunnerRun()
+        validateTestRunnerInitialize()
+        expect(testRunnerInitializeParams.testScope).not.toBeDefined()
 
-      @view = new RubyTestView()
-      spyOn(@view, 'setTestInfo').andCallThrough()
-      @view.testFile()
+      it "calls ::run on the TestRunner instance", ->
+        spyOnTestRunnerRun()
 
-      validateTestRunnerRun()
-      expect(@view.setTestInfo).toHaveBeenCalled()
+        view = new RubyTestView()
+        spyOn(view, 'setTestInfo').andCallThrough()
+        view.testFile()
 
-  describe "::testSingle", ->
-    it "instantiates TestRunner with specific arguments", ->
-      spyOnTestRunnerInitialize()
+        validateTestRunnerRun()
+        expect(view.setTestInfo).toHaveBeenCalled()
 
-      view = new RubyTestView()
-      view.testSingle()
+    describe "::testSingle", ->
+      it "instantiates TestRunner with specific arguments", ->
+        spyOnTestRunnerInitialize()
 
-      validateTestRunnerInitialize()
-      expect(testRunnerInitializeParams.testScope).toEqual('single')
+        view = new RubyTestView()
+        view.testSingle()
 
-    it "instantiates TestRunner and calls ::run on it", ->
-      spyOnTestRunnerRun()
+        validateTestRunnerInitialize()
+        expect(testRunnerInitializeParams.testScope).toEqual('single')
 
-      @view = new RubyTestView()
-      @view.testSingle()
+      it "instantiates TestRunner and calls ::run on it", ->
+        spyOnTestRunnerRun()
 
-      validateTestRunnerRun()
+        view = new RubyTestView()
+        view.testSingle()
 
-  describe "::testPrevious", ->
-    it "intantiates TestRunner and calls ::run on it with specific arguments", ->
-      spyOn(activeEditor, 'save')
+        validateTestRunnerRun()
 
-      @view = new RubyTestView()
-      previousRunner = new TestRunner(@view.testRunnerParams())
-      previousRunner.command = -> "foo"
-      @view.runner = previousRunner
-      @view.testPrevious()
+    describe "::testPrevious", ->
+      it "intantiates TestRunner and calls ::run on it with specific arguments", ->
+        spyOn(activeEditor, 'save')
 
-      expect(@view.output).toBe("")
-      expect(@view.runner).toBe(previousRunner)
-      expect(activeEditor.save).toHaveBeenCalled()
+        view = new RubyTestView()
+        previousRunner = new TestRunner(view.testRunnerParams())
+        previousRunner.command = -> "foo"
+        view.runner = previousRunner
+        view.testPrevious()
+
+        expect(view.output).toBe("")
+        expect(view.runner).toBe(previousRunner)
+        expect(activeEditor.save).toHaveBeenCalled()
+
+  describe "without open editor", ->
+    beforeEach ->
+      fileOpened = false
+      testRunnerInitializeParams = null
+      view = null
+
+    # Reproduce https://github.com/moxley/atom-ruby-test/issues/33:
+    # "Uncaught TypeError: Cannot read property 'save' of undefined"
+    describe "::testAll", ->
+      it "instantiates TestRunner and calls ::run on it", ->
+        spyOnTestRunnerRun()
+
+        view = new RubyTestView()
+        view.testAll()
+
+        expect(TestRunner.prototype.initialize).toHaveBeenCalled()
+        expect(TestRunner.prototype.run).toHaveBeenCalledWith()
+
 
   describe "::write", ->
     it "appends content to results element", ->
-      @view = new RubyTestView()
-      @view.write("foo")
-      expect(@view.results.text()).toBe "foo"
+      view = new RubyTestView()
+      view.write("foo")
+      expect(view.results.text()).toBe "foo"
