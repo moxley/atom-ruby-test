@@ -2,7 +2,9 @@
 
 ## Version 0.9.5
 
-* Upgrade to Atom API 1.0
+* Upgrade to Atom API 1.0 (#39)
+* Fix save-all without open file (#33)
+* Fix atom engine semver (#42)
 
 ## Version 0.9.4
 
