@@ -52,11 +52,11 @@ module.exports =
           matches[1]
 
     projectType: ->
-      if fs.existsSync(atom.project.path + '/test')
+      if fs.existsSync(@cwd() + '/test')
         'test'
-      else if fs.existsSync(atom.project.path + '/spec')
+      else if fs.existsSync(@cwd() + '/spec')
         'rspec'
-      else if fs.existsSync(atom.project.path + '/feature')
+      else if fs.existsSync(@cwd() + '/feature')
         'cucumber'
       else
         null
