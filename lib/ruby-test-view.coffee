@@ -13,6 +13,8 @@ class RubyTestView extends View
       @div class: "panel-heading", =>
         @span 'Running tests: '
         @span outlet: 'header'
+        @div class: "heading-buttons pull-right inline-block", =>
+          @div click: 'closePanel', class: "heading-close icon-x inline-block"
       @div class: "panel-body", =>
         @div class: 'ruby-test-spinner', 'Starting...'
         @pre "", outlet: 'results'
@@ -33,6 +35,10 @@ class RubyTestView extends View
   destroy: ->
     @output = ''
     @detach()
+
+  closePanel: ->
+    if @hasParent()
+      @detach()
 
   toggle: ->
     if @hasParent()

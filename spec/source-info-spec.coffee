@@ -13,7 +13,6 @@ describe "SourceInfo", ->
         ["fooPath"]
       relativize: (filePath) ->
         "fooDirectory/#{filePath}"
-      path: "project/path"
 
 
   setUpPackageConfig = ->
@@ -52,6 +51,28 @@ describe "SourceInfo", ->
     it "is atom.project.getPaths()[0]", ->
       setUpWithoutOpenFile()
       expect(sourceInfo.cwd()).toBe("fooPath")
+
+  describe "::projectType", ->
+    it "correctly detects a test directory", ->
+      spyOn(fs, 'existsSync').andCallFake (filePath) ->
+        filePath.match(/fooPath\/test$/)
+
+      setUpWithoutOpenFile()
+      expect(sourceInfo.projectType()).toBe("test")
+
+    it "correctly detecs a spec directory", ->
+      spyOn(fs, 'existsSync').andCallFake (filePath) ->
+        filePath.match(/fooPath\/spec$/)
+
+      setUpWithoutOpenFile()
+      expect(sourceInfo.projectType()).toBe("rspec")
+
+    it "correctly detects a cucumber directory", ->
+      spyOn(fs, 'existsSync').andCallFake (filePath) ->
+        filePath.match(/fooPath\/feature$/)
+
+      setUpWithoutOpenFile()
+      expect(sourceInfo.projectType()).toBe("cucumber")
 
   describe "::testAllCommand", ->
     it "is the atom config for 'ruby-test.testAllCommand'", ->
