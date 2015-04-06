@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 0.9.6
+
+* Fix string replacement error (#44)
+
 ## Version 0.9.5
 
 * Upgrade to Atom API 1.0 (#39)
