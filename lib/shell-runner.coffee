@@ -15,8 +15,20 @@ module.exports =
       @currentShell = params.currentShell || throw "Missing ::currentShell parameter"
 
     run: ->
-      fullCommand = "cd #{@params.cwd()} && #{@params.command()}; exit\n"
-      @process = @newProcess(fullCommand)
+      @process = @newProcess(@fullCommand())
+
+    fullCommand: ->
+      "cd #{@escape(@params.cwd())} && #{@params.command()}; exit\n"
+
+    escape: (str) ->
+      charsToEscape = "\\ \t\"'$()[]<>&|*;~`#"
+      out = ''
+      for ch in str
+        if charsToEscape.indexOf(ch) >= 0
+          out += '\\' + ch
+        else
+          out += ch
+      out
 
     kill: ->
       if @process?

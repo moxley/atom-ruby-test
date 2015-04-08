@@ -3,6 +3,7 @@
 ## Version 0.9.6
 
 * Fix string replacement error (#44)
+* Handle special shell characters in cwd (#30)
 
 ## Version 0.9.5
 
