@@ -15,7 +15,7 @@ module.exports =
       @currentShell = params.currentShell || throw "Missing ::currentShell parameter"
 
     run: ->
-      fullCommand = "cd #{@params.cwd()} && #{@params.command()}; exit\n"
+      fullCommand = "cd \"#{@params.cwd()}\" && #{@params.command()}; exit\n"
       @process = @newProcess(fullCommand)
 
     kill: ->
