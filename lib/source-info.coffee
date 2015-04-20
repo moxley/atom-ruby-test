@@ -31,7 +31,7 @@ module.exports =
     currentLine: ->
       @_currentLine ||= unless @_currentLine
         editor = atom.workspace.getActiveTextEditor()
-        cursor = editor and editor.getCursor()
+        cursor = editor and editor.getLastCursor()
         if cursor
           cursor.getBufferRow() + 1
         else
