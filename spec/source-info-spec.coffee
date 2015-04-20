@@ -28,6 +28,12 @@ describe "SourceInfo", ->
 
   setUpOpenFile = ->
     editor = {buffer: {file: {path: "foo_test.rb"}}}
+    cursor =
+      getBufferRow: ->
+        99
+    editor.getLastCursor = -> cursor
+    editor.lineTextForBufferRow = (line) ->
+      ""
     spyOn(atom.workspace, 'getActiveTextEditor').andReturn(editor)
 
   setUpWithOpenFile = ->
@@ -51,6 +57,13 @@ describe "SourceInfo", ->
     it "is atom.project.getPaths()[0]", ->
       setUpWithoutOpenFile()
       expect(sourceInfo.cwd()).toBe("fooPath")
+
+  describe "::fileType", ->
+    it "correctly detects a minitest file", ->
+      setUpWithOpenFile()
+      editor.lineTextForBufferRow = (line) ->
+        " it \"test something\" do"
+      expect(sourceInfo.fileType()).toBe("minitest")
 
   describe "::projectType", ->
     it "correctly detects a test directory", ->
@@ -125,6 +138,69 @@ describe "SourceInfo", ->
       it "is null", ->
         setUpWithoutOpenFile()
         expect(sourceInfo.currentLine()).toBeNull()
+
+  describe "::minitestRegExp", ->
+    it "correctly returns the matching regex for spec", ->
+      setUpWithoutOpenFile()
+      expect(sourceInfo.minitestRegExp(" it \"test something\" do", "spec")).toBe("test something")
+
+    it "correctly returns the matching regex for minitest unit", ->
+      setUpWithoutOpenFile()
+      expect(sourceInfo.minitestRegExp(" def test_something", "method")).toBe("test_something")
+
+    it "should return empty string if no match", ->
+      setUpWithoutOpenFile()
+      expect(sourceInfo.minitestRegExp("test something", "spec")).toBe("")
+
+  describe "::isMiniTest", ->
+    it "correctly returns true if it is minitest spec file", ->
+      setUpWithOpenFile()
+      cursor =
+        getBufferRow: ->
+          99
+      editor.lineTextForBufferRow = (line) ->
+        if line == 99
+          " it \"test something\" do"
+      expect(sourceInfo.isMiniTest("")).toBe(true)
+
+    it "correctly returns true if it is a minitest unit file", ->
+      setUpWithOpenFile()
+      cursor =
+        getBufferRow: ->
+          10
+      editor.getLastCursor = -> cursor
+      editor.lineTextForBufferRow = (line) ->
+        if line == 10
+          " def something"
+        else if line == 5
+          "class sometest < Minitest::Test"
+      expect(sourceInfo.isMiniTest("")).toBe(true)
+
+    it "correctly returns false if it is a rspec file", ->
+      setUpWithOpenFile()
+      cursor =
+        getBufferRow: ->
+          10
+      editor.getLastCursor = -> cursor
+      editor.lineTextForBufferRow = (line) ->
+        if line == 10
+          " it \"test something\" do"
+        else if line == 5
+          "require \"spec_helper\""
+      expect(sourceInfo.isMiniTest("")).toBe(false)
+
+    it "correctly returns false if it is a unit test file", ->
+      setUpWithOpenFile()
+      cursor =
+        getBufferRow: ->
+          10
+      editor.getLastCursor = -> cursor
+      editor.lineTextForBufferRow = (line) ->
+        if line == 10
+          " def something"
+        else if line == 5
+          "class sometest < Unit::Test"
+      expect(sourceInfo.isMiniTest("")).toBe(false)
 
   describe "::currentShell", ->
     it "when ruby-test.shell is null", ->

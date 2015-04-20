@@ -8,6 +8,11 @@ module.exports =
       test:    'test'
       spec:    'rspec'
       feature: 'cucumber'
+      minitest: 'minitest'
+
+    matchers:
+      method: /def\s(.*?)$/
+      spec: /(?:"|')(.*?)(?:"|')/
 
     currentShell: ->
       atom.config.get('ruby-test.shell') || 'bash'
@@ -37,6 +42,53 @@ module.exports =
         else
           null
 
+    minitestRegExp: (text, type)->
+      @_minitestRegExp ||= unless @_minitestRegExp
+        value = text.match(@matchers[type]) if text?
+        if value
+          value[1]
+        else
+          ""
+
+    isMiniTest: ->
+      editor = atom.workspace.getActiveTextEditor()
+      i = @currentLine() - 1
+      regExp = null
+      isSpec = false
+      isUnit = false
+      isRSpec = false
+      specRegExp = new RegExp(/^(\s+)(should|test|it)\s+['""'](.*)['""']\s+do\s*(?:#.*)?$/)
+      rspecRequireRegExp = new RegExp(/^require(\s+)['"]spec_helper['"]$/)
+      minitestClassRegExp = new RegExp(/class\s(.*)<(\s?|\s+)Minitest::Test/)
+      minitestMethodRegExp = new RegExp(/^(\s+)def\s(.*)$/)
+      while i >= 0
+        text = editor.lineTextForBufferRow(i)
+        # check if it is rspec or minitest spec
+        if !regExp && specRegExp.test(text)
+          isSpec = true
+          regExp = text
+        # check if it is minitest unit
+        else if !regExp && minitestMethodRegExp.test(text)
+          isUnit = true
+          regExp = text
+
+        # if it is spec and has require spec_helper which means it is rspec spec
+        else if rspecRequireRegExp.test(text)
+          isRSpec = true
+          break
+        # if it is unit test and inherit from Minitest::Unit
+        else if isUnit && minitestClassRegExp.test(text)
+          @minitestRegExp(regExp, "method")
+          return true
+
+        i--
+
+      if !isRSpec && isSpec
+        @minitestRegExp(regExp, "spec")
+        return true
+
+      return false
+
     testFramework: ->
       @_testFramework ||= unless @_testFramework
         (t = @fileType()) and @frameworkLookup[t] or
@@ -46,8 +98,11 @@ module.exports =
       @_fileType ||= if @_fileType == undefined
         if not @activeFile()
           null
-        else if matches = @activeFile().match(/_(test|spec)\.rb$/)
-          matches[1]
+        else if matches = @activeFile().match(/_?(test|spec)_?(.*)\.rb$/)
+          if @isMiniTest()
+            "minitest"
+          else
+            matches[1]
         else if matches = @activeFile().match(/\.(feature)$/)
           matches[1]
 

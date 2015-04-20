@@ -2,6 +2,15 @@ RubyTestView = require './ruby-test-view'
 
 module.exports =
   config:
+    minitestAllCommand:
+      type: 'string'
+      default: "ruby -I test test"
+    minitestFileCommand:
+      type: 'string'
+      default: "ruby -I test {relative_path}"
+    minitestSingleCommand:
+      type: 'string'
+      default: "ruby {relative_path} -n \"/{regex}/\""
     testAllCommand:
       type: 'string'
       default: "ruby -I test test"
