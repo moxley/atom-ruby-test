@@ -118,7 +118,7 @@ describe "SourceInfo", ->
       cursor =
         getBufferRow: ->
           99
-      editor.getCursor = -> cursor
+      editor.getLastCursor = -> cursor
       expect(sourceInfo.currentLine()).toBe(100)
 
     describe "without editor", ->
