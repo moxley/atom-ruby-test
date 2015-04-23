@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 0.9.7
+
+* Fix cursor function deprecation (#48)
+
 ## Version 0.9.6
 
 * Fix string replacement error (#44)
