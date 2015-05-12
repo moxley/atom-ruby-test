@@ -37,6 +37,24 @@ module.exports =
         else
           null
 
+    currentTest: ->
+      @_currentTest ||= unless @_currentTest
+        editor = atom.workspace.getActiveTextEditor()
+        cursor = editor and editor.getCursor()
+        if cursor
+          result = null
+          for row in [cursor.getBufferRow()..0]
+            line = editor.lineForBufferRow(row)
+            if matches = line.match(/test ["'](.*)["']/)
+              result = "test_" + matches[1].replace(/\ /g, "_")
+              break
+            else if matches = line.match(/def (test_.*)/)
+              result = matches[1]
+              break
+          result
+        else
+          null
+
     testFramework: ->
       @_testFramework ||= unless @_testFramework
         (t = @fileType()) and @frameworkLookup[t] or
