@@ -30,7 +30,8 @@ module.exports =
         else
           @testParams.testFileCommand()
       cmd.replace('{relative_path}', @testParams.activeFile()).
-          replace('{line_number}', @testParams.currentLine())
+          replace('{line_number}', @testParams.currentLine()).
+          replace('{test}', @testParams.currentTest())
 
     cancel: ->
       @shell.kill()
