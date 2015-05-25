@@ -14,6 +14,7 @@ describe "TestRunner", ->
     spyOn(@testRunnerParams, 'setTestInfo')
     spyOn(SourceInfo.prototype, 'activeFile').andReturn('fooTestFile')
     spyOn(SourceInfo.prototype, 'currentLine').andReturn(100)
+    spyOn(SourceInfo.prototype, 'minitestRegExp').andReturn('test foo')
     spyOn(SourceInfo.prototype, 'testFileCommand').andReturn('fooTestCommand {relative_path}')
     spyOn(SourceInfo.prototype, 'testSingleCommand').andReturn('fooTestCommand {relative_path}:{line_number}')
 
@@ -31,3 +32,10 @@ describe "TestRunner", ->
       runner = new TestRunner(@testRunnerParams)
       runner.run()
       expect(@testRunnerParams.setTestInfo).toHaveBeenCalledWith("fooTestCommand fooTestFile:100")
+
+    it "constructs a single-minitest command when testScope is 'single'", ->
+      SourceInfo.prototype.testSingleCommand.andReturn('fooTestCommand {relative_path} -n \"/{regex}/\"')
+      @testRunnerParams.testScope = "single"
+      runner = new TestRunner(@testRunnerParams)
+      runner.run()
+      expect(@testRunnerParams.setTestInfo).toHaveBeenCalledWith("fooTestCommand fooTestFile -n \"/test foo/\"")
