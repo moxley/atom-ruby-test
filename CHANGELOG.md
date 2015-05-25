@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 0.9.8
+
+* Minitest - run single test
+
 ## Version 0.9.7
 
 * Fix cursor function deprecation (#48)
