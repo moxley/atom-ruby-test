@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 0.9.9
+
+* Fix rspec detection (#54)
+
 ## Version 0.9.8
 
 * Minitest - run single test
