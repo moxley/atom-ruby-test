@@ -91,7 +91,8 @@ module.exports =
 
     testFramework: ->
       @_testFramework ||= unless @_testFramework
-        (t = @fileType()) and @frameworkLookup[t] or
+        (fs.existsSync(@cwd() + '/.rspec') and 'rspec') or
+        ((t = @fileType()) and @frameworkLookup[t]) or
         @projectType()
 
     fileType: ->

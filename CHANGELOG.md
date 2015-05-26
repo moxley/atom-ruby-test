@@ -1,5 +1,7 @@
 # Change Log
 
+## Version 0.9.10
+
 ## Version 0.9.9
 
 * Fix rspec detection (#54)
