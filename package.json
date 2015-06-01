@@ -4,7 +4,7 @@
   "homepage": "https://github.com/moxley/atom-ruby-test",
   "bugs": "https://github.com/moxley/atom-ruby-test/issues",
   "main": "./lib/ruby-test",
-  "version": "0.9.10",
+  "version": "0.9.11",
   "description": "Run Ruby tests, Rspec examples, and Cucumber features from Atom",
   "activationCommands": {
     "atom-workspace": [
