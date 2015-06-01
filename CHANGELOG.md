@@ -1,6 +1,12 @@
 # Change Log
 
+## Version 0.9.11
+
+* Add test runner debug info to console
+
 ## Version 0.9.10
+
+* Fix rspec detection (#55)
 
 ## Version 0.9.9
 
