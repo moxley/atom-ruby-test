@@ -28,6 +28,7 @@ Open the test file you want to run, then issue one of the following:
 * `cmd-ctrl-r` - Run the test at the current line in test file
 * `cmd-ctrl-e` - Re-run the previous test (doesn't need to have the test file active)
 * `cmd-ctrl-x` - Show/hide the test panel
+* `escape` - Hide the test panel
 
 ## Features
 
