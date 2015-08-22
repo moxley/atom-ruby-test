@@ -17,7 +17,7 @@ module.exports =
     currentShell: ->
       atom.config.get('ruby-test.shell') || 'bash'
 
-    cwd: ->
+    projectPath: ->
       atom.project.getPaths()[0]
 
     testFileCommand: ->
@@ -91,7 +91,7 @@ module.exports =
 
     testFramework: ->
       @_testFramework ||= unless @_testFramework
-        (fs.existsSync(@cwd() + '/.rspec') and 'rspec') or
+        (fs.existsSync(@projectPath() + '/.rspec') and 'rspec') or
         ((t = @fileType()) and @frameworkLookup[t]) or
         @projectType()
 
@@ -108,11 +108,11 @@ module.exports =
           matches[1]
 
     projectType: ->
-      if fs.existsSync(@cwd() + '/test')
+      if fs.existsSync(@projectPath() + '/test')
         'test'
-      else if fs.existsSync(@cwd() + '/spec')
+      else if fs.existsSync(@projectPath() + '/spec')
         'rspec'
-      else if fs.existsSync(@cwd() + '/feature')
+      else if fs.existsSync(@projectPath() + '/feature')
         'cucumber'
       else
         null

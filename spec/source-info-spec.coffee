@@ -53,10 +53,10 @@ describe "SourceInfo", ->
     savedCommands = {}
     atom.project = null
 
-  describe "::cwd", ->
+  describe "::projectPath", ->
     it "is atom.project.getPaths()[0]", ->
       setUpWithoutOpenFile()
-      expect(sourceInfo.cwd()).toBe("fooPath")
+      expect(sourceInfo.projectPath()).toBe("fooPath")
 
   describe "::fileType", ->
     it "correctly detects a minitest file", ->
