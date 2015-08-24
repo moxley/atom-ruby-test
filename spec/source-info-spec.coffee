@@ -65,6 +65,34 @@ describe "SourceInfo", ->
         " it \"test something\" do"
       expect(sourceInfo.fileType()).toBe("minitest")
 
+  # Detect framework, by inspecting a combination of current file name,
+  # project subdirectory names, current file content, and configuration value
+  describe "::testFramework", ->
+    setupRspecFile = ->
+      projectPath = "#{__dirname}/fixtures/rspec_project"
+      specFilePath = "#{projectPath}/spec/addition_spec.rb"
+
+      sourceInfo = new SourceInfo()
+      sourceInfo.activeFile = -> specFilePath
+      sourceInfo.projectPath = -> projectPath
+
+    it "detects RSpec based on configuration value set to 'rspec'", ->
+      setupRspecFile()
+      atom.config.set("ruby-test.specFramework", "rspec")
+
+      expect(sourceInfo.testFramework()).toBe("rspec")
+
+    it "detects Minitest based on configuration value set to 'miniteset'", ->
+      setupRspecFile()
+      atom.config.set("ruby-test.specFramework", "minitest")
+      expect(sourceInfo.testFramework()).toBe("minitest")
+
+    it "selects RSpec for spec file by default", ->
+      atom.config.set("ruby-test.specFramework", "")
+      setupRspecFile()
+      expect(sourceInfo.testFramework()).toBe("rspec")
+
+  # Detect project type, based on presence of a directory name matching a test framework
   describe "::projectType", ->
     it "correctly detects a test directory", ->
       spyOn(fs, 'existsSync').andCallFake (filePath) ->

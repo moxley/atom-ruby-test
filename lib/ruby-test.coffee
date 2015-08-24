@@ -3,39 +3,51 @@ RubyTestView = require './ruby-test-view'
 module.exports =
   config:
     minitestAllCommand:
+      title: "Minitest command: Run all tests"
       type: 'string'
       default: "ruby -I test test"
     minitestFileCommand:
+      title: "Minitest command: Run test file"
       type: 'string'
       default: "ruby -I test {relative_path}"
     minitestSingleCommand:
+      title: "Minitest command: Run current test"
       type: 'string'
       default: "ruby {relative_path} -n \"/{regex}/\""
     testAllCommand:
+      title: "Ruby Test command: Run all tests"
       type: 'string'
       default: "ruby -I test test"
     testFileCommand:
+      title: "Ruby Test command: Run test in file"
       type: 'string'
       default: "ruby -I test {relative_path}"
     testSingleCommand:
+      title: "Ruby Test command: Run test at line number"
       type: 'string'
       default: "ruby -I test {relative_path}:{line_number}"
     rspecAllCommand:
+      title: "RSpec command: run all specs"
       type: 'string',
       default: "rspec --tty spec"
     rspecFileCommand:
+      title: "RSpec command: run spec file"
       type: 'string',
       default: "rspec --tty {relative_path}"
     rspecSingleCommand:
+      title: "RSpec command: run spec at current line"
       type: 'string',
       default: "rspec --tty {relative_path}:{line_number}"
     cucumberAllCommand:
+      title: "Cucumber command: Run all features"
       type: 'string',
       default: "cucumber --color features"
     cucumberFileCommand:
+      title: "Cucumber command: Run features file"
       type: 'string',
       default: "cucumber --color {relative_path}"
     cucumberSingleCommand:
+      title: "Cucumber command: Run features at current line"
       type: 'string',
       default: "cucumber --color {relative_path}:{line_number}"
     shell:
