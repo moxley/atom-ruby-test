@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 0.9.12
+
+* Ability to copy from output pane (#6)
+
 ## Version 0.9.11
 
 * Add test runner debug info to console
