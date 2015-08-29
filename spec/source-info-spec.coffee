@@ -167,18 +167,18 @@ describe "SourceInfo", ->
         setUpWithoutOpenFile()
         expect(sourceInfo.currentLine()).toBeNull()
 
-  describe "::minitestRegExp", ->
+  describe "::extractMinitestRegExp", ->
     it "correctly returns the matching regex for spec", ->
       setUpWithoutOpenFile()
-      expect(sourceInfo.minitestRegExp(" it \"test something\" do", "spec")).toBe("test something")
+      expect(sourceInfo.extractMinitestRegExp(" it \"test something\" do", "spec")).toBe("test something")
 
     it "correctly returns the matching regex for minitest unit", ->
       setUpWithoutOpenFile()
-      expect(sourceInfo.minitestRegExp(" def test_something", "method")).toBe("test_something")
+      expect(sourceInfo.extractMinitestRegExp(" def test_something", "unit")).toBe("test_something")
 
     it "should return empty string if no match", ->
       setUpWithoutOpenFile()
-      expect(sourceInfo.minitestRegExp("test something", "spec")).toBe("")
+      expect(sourceInfo.extractMinitestRegExp("test something", "spec")).toBe("")
 
   describe "::isMiniTest", ->
     it "correctly returns true if it is minitest spec file", ->

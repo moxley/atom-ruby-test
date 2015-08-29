@@ -10,8 +10,8 @@ module.exports =
       feature: 'cucumber'
       minitest: 'minitest'
 
-    regExpForTestType:
-      method: /def\s(.*?)$/
+    regExpForTestStyle:
+      unit: /def\s(.*?)$/
       spec: /(?:"|')(.*?)(?:"|')/
 
     currentShell: ->
@@ -42,61 +42,71 @@ module.exports =
         else
           null
 
-    minitestRegExp: (sourceLine, testType)->
+    minitestRegExp: ->
       return @_minitestRegExp if @_minitestRegExp != undefined
-      match = sourceLine? and sourceLine.match(@regExpForTestType[testType]) or null
-      @_minitestRegExp = if match
+      file = @fileAnalysis()
+      @_minitestRegExp = @extractMinitestRegExp(file.testHeaderLine, file.testStyle)
+
+    extractMinitestRegExp: (testHeaderLine, testStyle)->
+      match = testHeaderLine? and testHeaderLine.match(@regExpForTestStyle[testStyle]) or null
+      if match
         match[1]
       else
         ""
 
     isMiniTest: ->
       return @_isMiniTest if @_isMiniTest != undefined
-      @_isMiniTest = @fileAnalysis()
+      @fileAnalysis().isMiniTest
 
     fileAnalysis: ->
       return @_fileAnalysis if @_fileAnalysis != undefined
 
+      @_fileAnalysis =
+        testHeaderLine: null
+        isSpec: false
+        isUnit: false
+        isRSpec: false
+        isMiniTest: false
+
       editor = atom.workspace.getActiveTextEditor()
       i = @currentLine() - 1
-      regExp = null
-      isSpec = false
-      isUnit = false
-      isRSpec = false
       specRegExp = new RegExp(/^(\s+)(should|test|it)\s+['""'](.*)['""']\s+do\s*(?:#.*)?$/)
       rspecRequireRegExp = new RegExp(/^require(\s+)['"](rails|spec)_helper['"]$/)
       minitestClassRegExp = new RegExp(/class\s(.*)<(\s?|\s+)Minitest::Test/)
       minitestMethodRegExp = new RegExp(/^(\s+)def\s(.*)$/)
       while i >= 0
-        text = editor.lineTextForBufferRow(i)
-        # check if it is rspec or minitest spec
-        if !regExp && specRegExp.test(text)
-          isSpec = true
-          regExp = text
-        # check if it is minitest unit
-        else if !regExp && minitestMethodRegExp.test(text)
-          isUnit = true
-          regExp = text
+        sourceLine = editor.lineTextForBufferRow(i)
+
+        if not @_fileAnalysis.testHeaderLine
+          # check if it is rspec or minitest spec
+          if specRegExp.test(sourceLine)
+            @_fileAnalysis.isSpec = true
+            @_fileAnalysis.testHeaderLine = sourceLine
+
+          # check if it is minitest unit
+          else if minitestMethodRegExp.test(sourceLine)
+            @_fileAnalysis.isUnit = true
+            @_fileAnalysis.testStyle = 'unit'
+            @_fileAnalysis.testHeaderLine = sourceLine
 
         # if it is spec and has require spec_helper which means it is rspec spec
-        else if rspecRequireRegExp.test(text)
-          isRSpec = true
+        else if rspecRequireRegExp.test(sourceLine)
+          @_fileAnalysis.isRSpec = true
+          @_fileAnalysis.isSpec = true
+          @_fileAnalysis.testStyle = 'spec'
           break
+
         # if it is unit test and inherit from Minitest::Unit
-        else if isUnit && minitestClassRegExp.test(text)
-          @minitestRegExp(regExp, "method")
-          @_isMiniTest = true
-          return true
+        else if @_fileAnalysis.isUnit && minitestClassRegExp.test(sourceLine)
+          @_fileAnalysis.isMiniTest = true
+          return @_fileAnalysis
 
         i--
 
-      if !isRSpec && isSpec
-        @minitestRegExp(regExp, "spec")
-        @_isMiniTest = true
-        return true
+      if not @_fileAnalysis.isRSpec and @_fileAnalysis.isSpec
+        @_fileAnalysis.isMiniTest = true
 
-      @_isMiniTest = false
-      return false
+      @_fileAnalysis
 
     testFramework: ->
       @_testFramework ||= unless @_testFramework
