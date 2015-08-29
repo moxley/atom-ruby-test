@@ -43,14 +43,16 @@ module.exports =
           null
 
     minitestRegExp: (text, type)->
-      @_minitestRegExp ||= unless @_minitestRegExp
-        value = text.match(@matchers[type]) if text?
-        if value
-          value[1]
-        else
-          ""
+      return @_minitestRegExp if @_minitestRegExp != undefined
+      value = text.match(@matchers[type]) if text?
+      @_minitestRegExp = if value
+        value[1]
+      else
+        ""
 
     isMiniTest: ->
+      return @_isMiniTest if @_isMiniTest != undefined
+
       editor = atom.workspace.getActiveTextEditor()
       i = @currentLine() - 1
       regExp = null
@@ -79,14 +81,17 @@ module.exports =
         # if it is unit test and inherit from Minitest::Unit
         else if isUnit && minitestClassRegExp.test(text)
           @minitestRegExp(regExp, "method")
+          @_isMiniTest = true
           return true
 
         i--
 
       if !isRSpec && isSpec
         @minitestRegExp(regExp, "spec")
+        @_isMiniTest = true
         return true
 
+      @_isMiniTest = false
       return false
 
     testFramework: ->
