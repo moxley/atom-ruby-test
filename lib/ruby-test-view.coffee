@@ -8,7 +8,7 @@ Convert = require 'ansi-to-html'
 module.exports =
 class RubyTestView extends View
   @content: ->
-    @div class: "ruby-test inset-panel panel-bottom", =>
+    @div class: "ruby-test inset-panel panel-bottom native-key-bindings", tabindex: -1, =>
       @div class: "ruby-test-resize-handle"
       @div class: "panel-heading", =>
         @span 'Running tests: '
