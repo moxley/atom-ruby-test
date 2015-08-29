@@ -10,7 +10,7 @@ module.exports =
       feature: 'cucumber'
       minitest: 'minitest'
 
-    matchers:
+    regExpForTestType:
       method: /def\s(.*?)$/
       spec: /(?:"|')(.*?)(?:"|')/
 
@@ -42,16 +42,20 @@ module.exports =
         else
           null
 
-    minitestRegExp: (text, type)->
+    minitestRegExp: (sourceLine, testType)->
       return @_minitestRegExp if @_minitestRegExp != undefined
-      value = text.match(@matchers[type]) if text?
-      @_minitestRegExp = if value
-        value[1]
+      match = sourceLine? and sourceLine.match(@regExpForTestType[testType]) or null
+      @_minitestRegExp = if match
+        match[1]
       else
         ""
 
     isMiniTest: ->
       return @_isMiniTest if @_isMiniTest != undefined
+      @_isMiniTest = @fileAnalysis()
+
+    fileAnalysis: ->
+      return @_fileAnalysis if @_fileAnalysis != undefined
 
       editor = atom.workspace.getActiveTextEditor()
       i = @currentLine() - 1
