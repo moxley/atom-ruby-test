@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 0.9.13
+
+* Configurable spec framework and test framework (#57)
+
 ## Version 0.9.12
 
 * Ability to copy from output pane (#6)
