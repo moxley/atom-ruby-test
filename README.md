@@ -38,7 +38,12 @@ Open the test file you want to run, then issue one of the following:
 * Configure the shell commands that run the tests
 * Supports Ruby managers, like `rvm` and `rbenv`
 * Supports bash and z-shell
-* Supports TestUnit, Rspec, and Cucumber
+* Supports Test::Unit, Rspec, Minitest, and Cucumber
+
+## Helpful Tips
+
+* Use ruby-test in conjunction with [project-manager](https://atom.io/packages/project-manager)
+  to maintain different ruby-test settings per project.
 
 ## Contributing
 

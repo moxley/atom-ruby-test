@@ -7,17 +7,18 @@ module.exports =
     frameworkLookup:
       test:    'test'
       spec:    'rspec'
+      rspec:   'rspec'
       feature: 'cucumber'
       minitest: 'minitest'
 
-    matchers:
-      method: /def\s(.*?)$/
+    regExpForTestStyle:
+      unit: /def\s(.*?)$/
       spec: /(?:"|')(.*?)(?:"|')/
 
     currentShell: ->
       atom.config.get('ruby-test.shell') || 'bash'
 
-    cwd: ->
+    projectPath: ->
       atom.project.getPaths()[0]
 
     testFileCommand: ->
@@ -42,77 +43,103 @@ module.exports =
         else
           null
 
-    minitestRegExp: (text, type)->
-      @_minitestRegExp ||= unless @_minitestRegExp
-        value = text.match(@matchers[type]) if text?
-        if value
-          value[1]
-        else
-          ""
+    minitestRegExp: ->
+      return @_minitestRegExp if @_minitestRegExp != undefined
+      file = @fileAnalysis()
+      @_minitestRegExp = @extractMinitestRegExp(file.testHeaderLine, file.testStyle)
+
+    extractMinitestRegExp: (testHeaderLine, testStyle)->
+      match = testHeaderLine? and testHeaderLine.match(@regExpForTestStyle[testStyle]) or null
+      if match
+        match[1]
+      else
+        ""
 
     isMiniTest: ->
+      return @_isMiniTest if @_isMiniTest != undefined
+      @fileAnalysis().isMiniTest
+
+    fileAnalysis: ->
+      return @_fileAnalysis if @_fileAnalysis != undefined
+
+      @_fileAnalysis =
+        testHeaderLine: null
+        isSpec: false
+        isUnit: false
+        isRSpec: false
+        isMiniTest: false
+
       editor = atom.workspace.getActiveTextEditor()
       i = @currentLine() - 1
-      regExp = null
-      isSpec = false
-      isUnit = false
-      isRSpec = false
-      specRegExp = new RegExp(/^(\s+)(should|test|it)\s+['""'](.*)['""']\s+do\s*(?:#.*)?$/)
+      specRegExp = new RegExp(/\b(should|test|it)\s+['""'](.*)['""']\s+do\b/)
       rspecRequireRegExp = new RegExp(/^require(\s+)['"](rails|spec)_helper['"]$/)
       minitestClassRegExp = new RegExp(/class\s(.*)<(\s?|\s+)Minitest::Test/)
       minitestMethodRegExp = new RegExp(/^(\s+)def\s(.*)$/)
       while i >= 0
-        text = editor.lineTextForBufferRow(i)
-        # check if it is rspec or minitest spec
-        if !regExp && specRegExp.test(text)
-          isSpec = true
-          regExp = text
-        # check if it is minitest unit
-        else if !regExp && minitestMethodRegExp.test(text)
-          isUnit = true
-          regExp = text
+        sourceLine = editor.lineTextForBufferRow(i)
+
+        if not @_fileAnalysis.testHeaderLine
+          # check if it is rspec or minitest spec
+          if specRegExp.test(sourceLine)
+            @_fileAnalysis.isSpec = true
+            @_fileAnalysis.testHeaderLine = sourceLine
+
+          # check if it is minitest unit
+          else if minitestMethodRegExp.test(sourceLine)
+            @_fileAnalysis.isUnit = true
+            @_fileAnalysis.testStyle = 'unit'
+            @_fileAnalysis.testHeaderLine = sourceLine
 
         # if it is spec and has require spec_helper which means it is rspec spec
-        else if rspecRequireRegExp.test(text)
-          isRSpec = true
+        else if rspecRequireRegExp.test(sourceLine)
+          @_fileAnalysis.isRSpec = true
+          @_fileAnalysis.isSpec = true
+          @_fileAnalysis.testStyle = 'spec'
           break
+
         # if it is unit test and inherit from Minitest::Unit
-        else if isUnit && minitestClassRegExp.test(text)
-          @minitestRegExp(regExp, "method")
-          return true
+        else if @_fileAnalysis.isUnit && minitestClassRegExp.test(sourceLine)
+          @_fileAnalysis.isMiniTest = true
+          return @_fileAnalysis
 
         i--
 
-      if !isRSpec && isSpec
-        @minitestRegExp(regExp, "spec")
-        return true
+      if not @_fileAnalysis.isRSpec and @_fileAnalysis.isSpec
+        @_fileAnalysis.isMiniTest = true
 
-      return false
+      @_fileAnalysis
 
     testFramework: ->
       @_testFramework ||= unless @_testFramework
-        (fs.existsSync(@cwd() + '/.rspec') and 'rspec') or
+        (fs.existsSync(@projectPath() + '/.rspec') and 'rspec') or
         ((t = @fileType()) and @frameworkLookup[t]) or
         @projectType()
 
     fileType: ->
       @_fileType ||= if @_fileType == undefined
+
         if not @activeFile()
           null
-        else if matches = @activeFile().match(/_?(test|spec)_?(.*)\.rb$/)
-          if @isMiniTest()
-            "minitest"
+        else if matches = @activeFile().match(/_(test|spec)\.rb$/)
+          if matches[1] == 'test' and atom.config.get("ruby-test.testFramework")
+            atom.config.get("ruby-test.testFramework")
+          else if matches[1] == 'spec' and atom.config.get("ruby-test.specFramework")
+            atom.config.get("ruby-test.specFramework")
+          else if @isMiniTest()
+            'minitest'
+          else if matches[1] == 'spec'
+            'rspec'
           else
-            matches[1]
+            'test'
         else if matches = @activeFile().match(/\.(feature)$/)
           matches[1]
 
     projectType: ->
-      if fs.existsSync(@cwd() + '/test')
+      if fs.existsSync(@projectPath() + '/test')
         'test'
-      else if fs.existsSync(@cwd() + '/spec')
+      else if fs.existsSync(@projectPath() + '/spec')
         'rspec'
-      else if fs.existsSync(@cwd() + '/feature')
+      else if fs.existsSync(@projectPath() + '/features')
         'cucumber'
       else
         null
