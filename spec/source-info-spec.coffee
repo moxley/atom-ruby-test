@@ -198,7 +198,7 @@ describe "SourceInfo", ->
       withSetup
         projectPaths: ['/home/user/my_project']
         testFile: null
-        mkdirs: ['/home/user/my_project/feature']
+        mkdirs: ['/home/user/my_project/features']
 
       expect(sourceInfo.projectType()).toBe("cucumber")
 

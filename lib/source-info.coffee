@@ -136,7 +136,7 @@ module.exports =
         'test'
       else if fs.existsSync(@projectPath() + '/spec')
         'rspec'
-      else if fs.existsSync(@projectPath() + '/feature')
+      else if fs.existsSync(@projectPath() + '/features')
         'cucumber'
       else
         null
