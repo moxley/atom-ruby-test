@@ -14,7 +14,6 @@ describe "SourceInfo", ->
       relativize: (filePath) ->
         "fooDirectory/#{filePath}"
 
-
   setUpPackageConfig = ->
     savedCommands = {}
     for framework in frameworks
@@ -47,6 +46,46 @@ describe "SourceInfo", ->
     setUpPackageConfig()
     sourceInfo = new SourceInfo()
 
+  withSetup = (opts) ->
+    atom.project =
+      getPaths: ->
+        ["project_1"]
+      relativize: (filePath) ->
+        for path in @getPaths()
+          index = filePath.indexOf(path)
+          if index >= 0
+            newPath = filePath.slice index + path.length, filePath.length
+            newPath = newPath.slice(1, newPath.length) if newPath[0] == '/'
+            return newPath
+
+    editor = {buffer: {file: {path: "foo_test.rb"}}}
+    cursor =
+      getBufferRow: ->
+        99
+    editor.getLastCursor = -> cursor
+    editor.lineTextForBufferRow = (line) ->
+      ""
+    spyOn(atom.workspace, 'getActiveTextEditor').andReturn(editor)
+    sourceInfo = new SourceInfo()
+
+    if opts.testFile
+      editor.buffer.file.path = opts.testFile
+
+    if opts.projectPaths
+      atom.project.getPaths = -> opts.projectPaths
+
+    if opts.currentLine
+      cursor.getBufferRow = -> opts.currentLine
+
+    if opts.fileContent
+      lines = opts.fileContent.split("\n")
+      editor.lineTextForBufferRow = (row) ->
+        lines[row]
+
+    if opts.config
+      for key, value of opts.config
+        atom.config.set(key, value)
+
   beforeEach ->
     editor = null
     sourceInfo = null
@@ -68,29 +107,75 @@ describe "SourceInfo", ->
   # Detect framework, by inspecting a combination of current file name,
   # project subdirectory names, current file content, and configuration value
   describe "::testFramework", ->
-    setupRspecFile = ->
-      projectPath = "#{__dirname}/fixtures/rspec_project"
-      specFilePath = "#{projectPath}/spec/addition_spec.rb"
+    describe "RSpec detection", ->
+      it "detects RSpec based on configuration value set to 'rspec'", ->
+        withSetup
+          config: "ruby-test.specFramework": "rspec"
+          projectPaths: ['/home/user/project_1']
+          testFile: '/home/user/project_1/bar/foo_spec.rb'
+          currentLine: 3
+          fileContent:
+            """
+            describe "something" do
+              it "test something" do
+                expect('foo').to eq 'foo'
+              end
+            end
+            """
 
-      sourceInfo = new SourceInfo()
-      sourceInfo.activeFile = -> specFilePath
-      sourceInfo.projectPath = -> projectPath
+        expect(sourceInfo.testFramework()).toBe("rspec")
 
-    it "detects RSpec based on configuration value set to 'rspec'", ->
-      setupRspecFile()
-      atom.config.set("ruby-test.specFramework", "rspec")
+      it "selects RSpec for spec file by default", ->
+        withSetup
+          config: "ruby-test.specFramework": ""
+          projectPaths: ['/home/user/project_1']
+          testFile: '/home/user/project_1/bar/foo_spec.rb'
+          currentLine: 5
+          fileContent:
+            """
+            require 'spec_helper'
 
-      expect(sourceInfo.testFramework()).toBe("rspec")
+            describe "something" do
+              it "test something" do
+                expect('foo').to eq 'foo'
+              end
+            end
+            """
+        expect(sourceInfo.testFramework()).toBe("rspec")
 
-    it "detects Minitest based on configuration value set to 'miniteset'", ->
-      setupRspecFile()
-      atom.config.set("ruby-test.specFramework", "minitest")
-      expect(sourceInfo.testFramework()).toBe("minitest")
+    describe "Minitest detection", ->
+      it "correctly returns true if filename matches _test.rb, and file contains specs", ->
+        withSetup
+          config: "ruby-test.specFramework": ""
+          projectPaths: ['/home/user/project_1']
+          testFile: '/home/user/project_1/bar/foo_test.rb'
+          currentLine: 10
+          fileContent:
+            """
+            describe "something" do
+              it "test something" do
+                1.must_equal 1
+              end
+            end
+            """
+        expect(sourceInfo.testFramework()).toBe("minitest")
 
-    it "selects RSpec for spec file by default", ->
-      atom.config.set("ruby-test.specFramework", "")
-      setupRspecFile()
-      expect(sourceInfo.testFramework()).toBe("rspec")
+      it "detects Minitest based on configuration value set to 'minitest'", ->
+        withSetup
+          config: "ruby-test.specFramework": "minitest"
+          projectPaths: ['/home/user/project_1']
+          testFile: '/home/user/project_1/bar/foo_spec.rb'
+          currentLine: 3
+          fileContent:
+            """
+            describe "something" do
+              it "test something" do
+                1.must_equal 1
+              end
+            end
+            """
+
+        expect(sourceInfo.testFramework()).toBe("minitest")
 
   # Detect project type, based on presence of a directory name matching a test framework
   describe "::projectType", ->
@@ -202,7 +287,7 @@ describe "SourceInfo", ->
           " def something"
         else if line == 5
           "class sometest < Minitest::Test"
-      expect(sourceInfo.isMiniTest("")).toBe(true)
+      expect(sourceInfo.isMiniTest()).toBe(true)
 
     it "correctly returns false if it is a rspec file", ->
       setUpWithOpenFile()
@@ -215,7 +300,7 @@ describe "SourceInfo", ->
           " it \"test something\" do"
         else if line == 5
           "require \"spec_helper\""
-      expect(sourceInfo.isMiniTest("")).toBe(false)
+      expect(sourceInfo.isMiniTest()).toBe(false)
 
     it "correctly returns false if it is a unit test file", ->
       setUpWithOpenFile()
@@ -228,7 +313,7 @@ describe "SourceInfo", ->
           " def something"
         else if line == 5
           "class sometest < Unit::Test"
-      expect(sourceInfo.isMiniTest("")).toBe(false)
+      expect(sourceInfo.isMiniTest()).toBe(false)
 
   describe "::currentShell", ->
     it "when ruby-test.shell is null", ->
