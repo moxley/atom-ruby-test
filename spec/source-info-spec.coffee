@@ -35,12 +35,6 @@ describe "SourceInfo", ->
       ""
     spyOn(atom.workspace, 'getActiveTextEditor').andReturn(editor)
 
-  setUpWithOpenFile = ->
-    setUpProjectPaths()
-    setUpPackageConfig()
-    setUpOpenFile()
-    sourceInfo = new SourceInfo()
-
   setUpWithoutOpenFile = ->
     setUpProjectPaths()
     setUpPackageConfig()
@@ -75,7 +69,7 @@ describe "SourceInfo", ->
       atom.project.getPaths = -> opts.projectPaths
 
     if opts.currentLine
-      cursor.getBufferRow = -> opts.currentLine
+      cursor.getBufferRow = -> opts.currentLine - 1
 
     if opts.fileContent
       lines = opts.fileContent.split("\n")
@@ -96,13 +90,6 @@ describe "SourceInfo", ->
     it "is atom.project.getPaths()[0]", ->
       setUpWithoutOpenFile()
       expect(sourceInfo.projectPath()).toBe("fooPath")
-
-  describe "::fileType", ->
-    it "correctly detects a minitest file", ->
-      setUpWithOpenFile()
-      editor.lineTextForBufferRow = (line) ->
-        " it \"test something\" do"
-      expect(sourceInfo.fileType()).toBe("minitest")
 
   # Detect framework, by inspecting a combination of current file name,
   # project subdirectory names, current file content, and configuration value
@@ -125,7 +112,7 @@ describe "SourceInfo", ->
 
         expect(sourceInfo.testFramework()).toBe("rspec")
 
-      it "selects RSpec for spec file by default", ->
+      it "selects RSpec for spec file if spec_helper is required", ->
         withSetup
           config: "ruby-test.specFramework": ""
           projectPaths: ['/home/user/project_1']
@@ -177,6 +164,48 @@ describe "SourceInfo", ->
 
         expect(sourceInfo.testFramework()).toBe("minitest")
 
+      it "correctly returns true if it is a minitest unit file", ->
+        withSetup
+          projectPaths: ['/home/user/project_1']
+          testFile: '/home/user/project_1/bar/foo_test.rb'
+          currentLine: 3
+          fileContent:
+            """
+            class sometest < Minitest::Test
+              def something
+                assert_equal 1, 1
+              end
+            end
+            """
+        expect(sourceInfo.testFramework()).toBe("minitest")
+
+    describe "TestUnit detection", ->
+      it "correctly detects TestUnit file", ->
+        withSetup
+          projectPaths: ['/home/user/project_1']
+          testFile: '/home/user/project_1/bar/foo_test.rb'
+          currentLine: 3
+          fileContent:
+            """
+            class sometest < Unit::Test
+              def something
+                assert_equal 1, 1
+              end
+            end
+            """
+        expect(sourceInfo.testFramework()).toBe("test")
+
+    describe "Cucumber detection", ->
+      it "correctly detects Cucumber file", ->
+        withSetup
+          projectPaths: ['/home/user/project_1']
+          testFile: '/home/user/project_1/foo/foo.feature'
+          currentLine: 1
+          fileContent:
+            """
+            """
+        expect(sourceInfo.testFramework()).toBe("cucumber")
+
   # Detect project type, based on presence of a directory name matching a test framework
   describe "::projectType", ->
     it "correctly detects a test directory", ->
@@ -220,37 +249,41 @@ describe "SourceInfo", ->
 
   describe "::testFileCommand", ->
     it "is the atom config for 'ruby-test.testFileCommand'", ->
-      setUpWithOpenFile()
-      expect(sourceInfo.testFileCommand()).toBe("foo-testFileCommand")
+      withSetup
+        config:
+          "ruby-test.specFramework": "rspec"
+          "ruby-test.rspecFileCommand": "my_rspec --tty {relative_path}"
+        projectPaths: ['/home/user/project_1']
+        testFile: '/home/user/project_1/bar/foo_spec.rb'
+        currentLine: 1
+        fileContent: ''
 
-    it "is the atom config for 'ruby-test.rspecFileCommand' for an rspec file", ->
-      setUpWithOpenFile()
-      editor.buffer.file.path = 'foo_spec.rb'
-      expect(sourceInfo.testFileCommand()).toBe("foo-rspecFileCommand")
+      expect(sourceInfo.testFileCommand()).toBe("my_rspec --tty {relative_path}")
 
   describe "::testSingleCommand", ->
     it "is the atom config for 'ruby-test.testSingleCommand'", ->
-      setUpWithOpenFile()
-      expect(sourceInfo.testSingleCommand()).toBe("foo-testSingleCommand")
+      withSetup
+        config:
+          "ruby-test.specFramework": "rspec"
+          "ruby-test.rspecSingleCommand": "my_rspec --tty {relative_path}:{line_number}"
+        projectPaths: ['/home/user/project_1']
+        testFile: '/home/user/project_1/bar/foo_spec.rb'
+        currentLine: 1
+        fileContent: ''
+      expect(sourceInfo.testSingleCommand()).toBe("my_rspec --tty {relative_path}:{line_number}")
 
   describe "::activeFile", ->
     it "is the project-relative path for the current file path", ->
-      setUpWithOpenFile()
-      expect(sourceInfo.activeFile()).toBe("fooDirectory/foo_test.rb")
+      withSetup
+        projectPaths: ['/home/user/project_1']
+        testFile: '/home/user/project_1/bar/foo_test.rb'
+      expect(sourceInfo.activeFile()).toBe("bar/foo_test.rb")
 
   describe "::currentLine", ->
     it "is the cursor getBufferRow() plus 1", ->
-      setUpWithOpenFile()
-      cursor =
-        getBufferRow: ->
-          99
-      editor.getLastCursor = -> cursor
+      withSetup
+        currentLine: 100
       expect(sourceInfo.currentLine()).toBe(100)
-
-    describe "without editor", ->
-      it "is null", ->
-        setUpWithoutOpenFile()
-        expect(sourceInfo.currentLine()).toBeNull()
 
   describe "::extractMinitestRegExp", ->
     it "correctly returns the matching regex for spec", ->
@@ -265,61 +298,10 @@ describe "SourceInfo", ->
       setUpWithoutOpenFile()
       expect(sourceInfo.extractMinitestRegExp("test something", "spec")).toBe("")
 
-  describe "::isMiniTest", ->
-    it "correctly returns true if it is minitest spec file", ->
-      setUpWithOpenFile()
-      cursor =
-        getBufferRow: ->
-          99
-      editor.lineTextForBufferRow = (line) ->
-        if line == 99
-          " it \"test something\" do"
-      expect(sourceInfo.isMiniTest("")).toBe(true)
-
-    it "correctly returns true if it is a minitest unit file", ->
-      setUpWithOpenFile()
-      cursor =
-        getBufferRow: ->
-          10
-      editor.getLastCursor = -> cursor
-      editor.lineTextForBufferRow = (line) ->
-        if line == 10
-          " def something"
-        else if line == 5
-          "class sometest < Minitest::Test"
-      expect(sourceInfo.isMiniTest()).toBe(true)
-
-    it "correctly returns false if it is a rspec file", ->
-      setUpWithOpenFile()
-      cursor =
-        getBufferRow: ->
-          10
-      editor.getLastCursor = -> cursor
-      editor.lineTextForBufferRow = (line) ->
-        if line == 10
-          " it \"test something\" do"
-        else if line == 5
-          "require \"spec_helper\""
-      expect(sourceInfo.isMiniTest()).toBe(false)
-
-    it "correctly returns false if it is a unit test file", ->
-      setUpWithOpenFile()
-      cursor =
-        getBufferRow: ->
-          10
-      editor.getLastCursor = -> cursor
-      editor.lineTextForBufferRow = (line) ->
-        if line == 10
-          " def something"
-        else if line == 5
-          "class sometest < Unit::Test"
-      expect(sourceInfo.isMiniTest()).toBe(false)
-
   describe "::currentShell", ->
     it "when ruby-test.shell is null", ->
       setUpWithoutOpenFile()
       expect(sourceInfo.currentShell()).toBe('bash')
-
 
   afterEach ->
     delete atom.project
