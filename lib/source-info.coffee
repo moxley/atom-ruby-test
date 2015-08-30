@@ -117,17 +117,20 @@ module.exports =
 
     fileType: ->
       @_fileType ||= if @_fileType == undefined
-        configuredSpecFramework = atom.config.get("ruby-test.specFramework")
 
         if not @activeFile()
           null
-        else if matches = @activeFile().match(/_?(test|spec)\.rb$/)
-          if configuredSpecFramework
-            configuredSpecFramework
+        else if matches = @activeFile().match(/_(test|spec)\.rb$/)
+          if matches[1] == 'test' and atom.config.get("ruby-test.testFramework")
+            atom.config.get("ruby-test.testFramework")
+          else if matches[1] == 'spec' and atom.config.get("ruby-test.specFramework")
+            atom.config.get("ruby-test.specFramework")
           else if @isMiniTest()
-            "minitest"
+            'minitest'
+          else if matches[1] == 'spec'
+            'rspec'
           else
-            matches[1]
+            'test'
         else if matches = @activeFile().match(/\.(feature)$/)
           matches[1]
 

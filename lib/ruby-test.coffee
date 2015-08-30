@@ -61,7 +61,7 @@ module.exports =
     testFramework:
       type: 'string'
       default: 'minitest'
-      enum: ['', 'minitest', 'TestUnit']
+      enum: ['', 'minitest', 'test']
       description: 'Minitest test files and Test::Unit files look very similar to each other, and ruby-test often can\'t tell them apart. Choose your preferred *_test.rb framework.'
 
   rubyTestView: null

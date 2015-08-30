@@ -70,15 +70,8 @@ describe "SourceInfo", ->
           config: "ruby-test.specFramework": "rspec"
           projectPaths: ['/home/user/project_1']
           testFile: '/home/user/project_1/bar/foo_spec.rb'
-          currentLine: 3
-          fileContent:
-            """
-            describe "something" do
-              it "test something" do
-                expect('foo').to eq 'foo'
-              end
-            end
-            """
+          currentLine: 1
+          fileContent: ''
 
         expect(sourceInfo.testFramework()).toBe("rspec")
 
@@ -101,7 +94,7 @@ describe "SourceInfo", ->
         expect(sourceInfo.testFramework()).toBe("rspec")
 
     describe "Minitest detection", ->
-      it "correctly returns true if filename matches _test.rb, and file contains specs", ->
+      it "is Minitest if filename matches _test.rb, and file contains specs", ->
         withSetup
           config: "ruby-test.specFramework": ""
           projectPaths: ['/home/user/project_1']
@@ -122,19 +115,12 @@ describe "SourceInfo", ->
           config: "ruby-test.specFramework": "minitest"
           projectPaths: ['/home/user/project_1']
           testFile: '/home/user/project_1/bar/foo_spec.rb'
-          currentLine: 3
-          fileContent:
-            """
-            describe "something" do
-              it "test something" do
-                1.must_equal 1
-              end
-            end
-            """
+          currentLine: 1
+          fileContent: ''
 
         expect(sourceInfo.testFramework()).toBe("minitest")
 
-      it "correctly returns true if it is a minitest unit file", ->
+      it "is Minitest for a _test.rb file that contains Minitest::Test", ->
         withSetup
           projectPaths: ['/home/user/project_1']
           testFile: '/home/user/project_1/bar/foo_test.rb'
@@ -176,6 +162,7 @@ describe "SourceInfo", ->
             """
         expect(sourceInfo.testFramework()).toBe("cucumber")
 
+  # For when no test file is active
   # Detect project type, based on presence of a directory name matching a test framework
   describe "::projectType", ->
     it "correctly detects a test directory", ->
@@ -213,7 +200,7 @@ describe "SourceInfo", ->
       expect(sourceInfo.testAllCommand()).toBe("my_ruby -I test test")
 
   describe "::rspecAllCommand", ->
-    it "is the atom config for 'ruby-test.rspecAllCommand'", ->
+    it "is the atom config for 'ruby-test.rspecAllCommand' if spec directory exists", ->
       withSetup
         config: "ruby-test.rspecAllCommand": "my_rspec spec"
         projectPaths: ['/home/user/my_project']
@@ -222,8 +209,8 @@ describe "SourceInfo", ->
 
       expect(sourceInfo.testAllCommand()).toBe("my_rspec spec")
 
-  describe "::testFileCommand", ->
-    it "is the atom config for 'ruby-test.testFileCommand'", ->
+  describe "::rspecFileCommand", ->
+    it "is the atom config for 'ruby-test.rspecFileCommand' if active file is _spec.rb and spec framework is rspec", ->
       withSetup
         config:
           "ruby-test.specFramework": "rspec"
@@ -236,16 +223,16 @@ describe "SourceInfo", ->
       expect(sourceInfo.testFileCommand()).toBe("my_rspec --tty {relative_path}")
 
   describe "::testSingleCommand", ->
-    it "is the atom config for 'ruby-test.testSingleCommand'", ->
+    it "is the atom config for 'ruby-test.testSingleCommand' if active file is _test.rb and test framework is test", ->
       withSetup
         config:
-          "ruby-test.specFramework": "rspec"
-          "ruby-test.rspecSingleCommand": "my_rspec --tty {relative_path}:{line_number}"
+          "ruby-test.testFramework": "test"
+          "ruby-test.testSingleCommand": "my_ruby -I test {relative_path}:{line_number}"
         projectPaths: ['/home/user/project_1']
-        testFile: '/home/user/project_1/bar/foo_spec.rb'
+        testFile: '/home/user/project_1/bar/foo_test.rb'
         currentLine: 1
         fileContent: ''
-      expect(sourceInfo.testSingleCommand()).toBe("my_rspec --tty {relative_path}:{line_number}")
+      expect(sourceInfo.testSingleCommand()).toBe("my_ruby -I test {relative_path}:{line_number}")
 
   describe "::activeFile", ->
     it "is the project-relative path for the current file path", ->
