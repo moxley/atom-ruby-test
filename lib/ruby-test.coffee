@@ -57,7 +57,12 @@ module.exports =
       type: 'string'
       default: 'rspec'
       enum: ['', 'rspec', 'minitest']
-      description: 'RSpec and Minitest spec files look very similar to each other, and ruby-test often can\'t tell them apart. Choose your preferred spec framework.'
+      description: 'RSpec and Minitest spec files look very similar to each other, and ruby-test often can\'t tell them apart. Choose your preferred *_spec.rb framework.'
+    testFramework:
+      type: 'string'
+      default: 'minitest'
+      enum: ['', 'minitest', 'TestUnit']
+      description: 'Minitest test files and Test::Unit files look very similar to each other, and ruby-test often can\'t tell them apart. Choose your preferred *_test.rb framework.'
 
   rubyTestView: null
 

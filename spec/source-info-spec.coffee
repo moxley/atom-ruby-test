@@ -149,15 +149,15 @@ describe "SourceInfo", ->
             """
         expect(sourceInfo.testFramework()).toBe("minitest")
 
-    describe "TestUnit detection", ->
-      it "correctly detects TestUnit file", ->
+    describe "Test::Unit detection", ->
+      it "assumes Test::Unit when the filename ends with _test.rb, has a method definition, and doesn't have a reference to Minitest", ->
         withSetup
           projectPaths: ['/home/user/project_1']
           testFile: '/home/user/project_1/bar/foo_test.rb'
           currentLine: 3
           fileContent:
             """
-            class sometest < Unit::Test
+            class sometest < Whatever::Unit
               def something
                 assert_equal 1, 1
               end
