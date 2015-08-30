@@ -7,6 +7,7 @@ module.exports =
     frameworkLookup:
       test:    'test'
       spec:    'rspec'
+      rspec:   'rspec'
       feature: 'cucumber'
       minitest: 'minitest'
 
@@ -70,7 +71,7 @@ module.exports =
 
       editor = atom.workspace.getActiveTextEditor()
       i = @currentLine() - 1
-      specRegExp = new RegExp(/^(\s+)(should|test|it)\s+['""'](.*)['""']\s+do\s*(?:#.*)?$/)
+      specRegExp = new RegExp(/\b(should|test|it)\s+['""'](.*)['""']\s+do\b/)
       rspecRequireRegExp = new RegExp(/^require(\s+)['"](rails|spec)_helper['"]$/)
       minitestClassRegExp = new RegExp(/class\s(.*)<(\s?|\s+)Minitest::Test/)
       minitestMethodRegExp = new RegExp(/^(\s+)def\s(.*)$/)
@@ -116,13 +117,13 @@ module.exports =
 
     fileType: ->
       @_fileType ||= if @_fileType == undefined
-        specFramework = atom.config.get("ruby-test.specFramework")
+        configuredSpecFramework = atom.config.get("ruby-test.specFramework")
 
         if not @activeFile()
           null
         else if matches = @activeFile().match(/_?(test|spec)\.rb$/)
-          if specFramework
-            specFramework
+          if configuredSpecFramework
+            configuredSpecFramework
           else if @isMiniTest()
             "minitest"
           else
