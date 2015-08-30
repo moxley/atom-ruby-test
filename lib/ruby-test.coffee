@@ -55,12 +55,12 @@ module.exports =
       default: "bash"
     specFramework:
       type: 'string'
-      default: 'rspec'
+      default: ''
       enum: ['', 'rspec', 'minitest']
       description: 'RSpec and Minitest spec files look very similar to each other, and ruby-test often can\'t tell them apart. Choose your preferred *_spec.rb framework.'
     testFramework:
       type: 'string'
-      default: 'minitest'
+      default: ''
       enum: ['', 'minitest', 'test']
       description: 'Minitest test files and Test::Unit files look very similar to each other, and ruby-test often can\'t tell them apart. Choose your preferred *_test.rb framework.'
 
