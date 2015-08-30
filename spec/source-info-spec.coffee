@@ -2,43 +2,8 @@ SourceInfo = require '../lib/source-info'
 fs = require('fs')
 
 describe "SourceInfo", ->
-  frameworks = ['test', 'rspec', 'cucumber']
-  savedCommands = {}
   editor = null
   sourceInfo = null
-
-  setUpProjectPaths = ->
-    atom.project =
-      getPaths: ->
-        ["fooPath"]
-      relativize: (filePath) ->
-        "fooDirectory/#{filePath}"
-
-  setUpPackageConfig = ->
-    savedCommands = {}
-    for framework in frameworks
-      savedCommands["#{framework}-all"] = atom.config.get("ruby-test.#{framework}AllCommand")
-      atom.config.set("ruby-test.#{framework}AllCommand", "foo-#{framework}AllCommand")
-      savedCommands["#{framework}-file"] = atom.config.get("ruby-test.#{framework}FileCommand")
-      atom.config.set("ruby-test.#{framework}FileCommand", "foo-#{framework}FileCommand")
-      savedCommands["#{framework}-single"] = atom.config.get("ruby-test.#{framework}SingleCommand")
-      atom.config.set("ruby-test.#{framework}SingleCommand", "foo-#{framework}SingleCommand")
-
-
-  setUpOpenFile = ->
-    editor = {buffer: {file: {path: "foo_test.rb"}}}
-    cursor =
-      getBufferRow: ->
-        99
-    editor.getLastCursor = -> cursor
-    editor.lineTextForBufferRow = (line) ->
-      ""
-    spyOn(atom.workspace, 'getActiveTextEditor').andReturn(editor)
-
-  setUpWithoutOpenFile = ->
-    setUpProjectPaths()
-    setUpPackageConfig()
-    sourceInfo = new SourceInfo()
 
   withSetup = (opts) ->
     atom.project =
@@ -80,16 +45,21 @@ describe "SourceInfo", ->
       for key, value of opts.config
         atom.config.set(key, value)
 
+    if opts.mkdirs
+      spyOn(fs, 'existsSync').andCallFake (path) ->
+        path in opts.mkdirs
+
   beforeEach ->
     editor = null
     sourceInfo = null
-    savedCommands = {}
     atom.project = null
 
   describe "::projectPath", ->
     it "is atom.project.getPaths()[0]", ->
-      setUpWithoutOpenFile()
-      expect(sourceInfo.projectPath()).toBe("fooPath")
+      withSetup
+        projectPaths: ['/home/user/my_project']
+        testFile: null
+      expect(sourceInfo.projectPath()).toBe("/home/user/my_project")
 
   # Detect framework, by inspecting a combination of current file name,
   # project subdirectory names, current file content, and configuration value
@@ -209,43 +179,48 @@ describe "SourceInfo", ->
   # Detect project type, based on presence of a directory name matching a test framework
   describe "::projectType", ->
     it "correctly detects a test directory", ->
-      spyOn(fs, 'existsSync').andCallFake (filePath) ->
-        filePath.match(/fooPath\/test$/)
+      withSetup
+        projectPaths: ['/home/user/my_project']
+        testFile: null
+        mkdirs: ['/home/user/my_project/test']
 
-      setUpWithoutOpenFile()
       expect(sourceInfo.projectType()).toBe("test")
 
     it "correctly detecs a spec directory", ->
-      spyOn(fs, 'existsSync').andCallFake (filePath) ->
-        filePath.match(/fooPath\/spec$/)
+      withSetup
+        projectPaths: ['/home/user/my_project']
+        testFile: null
+        mkdirs: ['/home/user/my_project/spec']
 
-      setUpWithoutOpenFile()
       expect(sourceInfo.projectType()).toBe("rspec")
 
     it "correctly detects a cucumber directory", ->
-      spyOn(fs, 'existsSync').andCallFake (filePath) ->
-        filePath.match(/fooPath\/feature$/)
+      withSetup
+        projectPaths: ['/home/user/my_project']
+        testFile: null
+        mkdirs: ['/home/user/my_project/feature']
 
-      setUpWithoutOpenFile()
       expect(sourceInfo.projectType()).toBe("cucumber")
 
   describe "::testAllCommand", ->
     it "is the atom config for 'ruby-test.testAllCommand'", ->
-      # Simulate a project having a 'test' directory
-      spyOn(fs, 'existsSync').andCallFake (filePath) ->
-        filePath.match(/test$/)
+      withSetup
+        config: "ruby-test.testAllCommand": "my_ruby -I test test"
+        projectPaths: ['/home/user/my_project']
+        testFile: null
+        mkdirs: ['/home/user/my_project/test']
 
-      setUpWithoutOpenFile()
-      expect(sourceInfo.testAllCommand()).toBe("foo-testAllCommand")
+      expect(sourceInfo.testAllCommand()).toBe("my_ruby -I test test")
 
   describe "::rspecAllCommand", ->
     it "is the atom config for 'ruby-test.rspecAllCommand'", ->
-      # Simulate a project having a 'spec' directory
-      spyOn(fs, 'existsSync').andCallFake (filePath) ->
-        filePath.match(/spec$/)
+      withSetup
+        config: "ruby-test.rspecAllCommand": "my_rspec spec"
+        projectPaths: ['/home/user/my_project']
+        testFile: null
+        mkdirs: ['/home/user/my_project/spec']
 
-      setUpWithoutOpenFile()
-      expect(sourceInfo.testAllCommand()).toBe("foo-rspecAllCommand")
+      expect(sourceInfo.testAllCommand()).toBe("my_rspec spec")
 
   describe "::testFileCommand", ->
     it "is the atom config for 'ruby-test.testFileCommand'", ->
@@ -287,25 +262,23 @@ describe "SourceInfo", ->
 
   describe "::extractMinitestRegExp", ->
     it "correctly returns the matching regex for spec", ->
-      setUpWithoutOpenFile()
+      sourceInfo = new SourceInfo()
       expect(sourceInfo.extractMinitestRegExp(" it \"test something\" do", "spec")).toBe("test something")
 
     it "correctly returns the matching regex for minitest unit", ->
-      setUpWithoutOpenFile()
+      sourceInfo = new SourceInfo()
       expect(sourceInfo.extractMinitestRegExp(" def test_something", "unit")).toBe("test_something")
 
     it "should return empty string if no match", ->
-      setUpWithoutOpenFile()
+      sourceInfo = new SourceInfo()
       expect(sourceInfo.extractMinitestRegExp("test something", "spec")).toBe("")
 
   describe "::currentShell", ->
     it "when ruby-test.shell is null", ->
-      setUpWithoutOpenFile()
-      expect(sourceInfo.currentShell()).toBe('bash')
+      withSetup
+        config: "ruby-test.shell": "my_bash"
+
+      expect(sourceInfo.currentShell()).toBe('my_bash')
 
   afterEach ->
     delete atom.project
-    for framework in frameworks
-      atom.config.set("ruby-test.#{framework}AllCommand", savedCommands["#{framework}-all"])
-      atom.config.set("ruby-test.#{framework}FileCommand", savedCommands["#{framework}-file"])
-      atom.config.set("ruby-test.#{framework}SingleCommand", savedCommands["#{framework}-single"])
