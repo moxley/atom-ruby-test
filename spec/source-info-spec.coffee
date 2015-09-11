@@ -157,6 +157,7 @@ describe "SourceInfo", ->
           projectPaths: ['/home/user/project_1']
           testFile: '/home/user/project_1/foo/foo.feature'
           currentLine: 1
+          mkdirs: ['/home/user/project_1/spec']
           fileContent:
             """
             """
