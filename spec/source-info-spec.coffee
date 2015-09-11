@@ -45,9 +45,9 @@ describe "SourceInfo", ->
       for key, value of opts.config
         atom.config.set(key, value)
 
-    if opts.mkdirs
+    if opts.mockPaths
       spyOn(fs, 'existsSync').andCallFake (path) ->
-        path in opts.mkdirs
+        path in opts.mockPaths
 
   beforeEach ->
     editor = null
@@ -157,7 +157,10 @@ describe "SourceInfo", ->
           projectPaths: ['/home/user/project_1']
           testFile: '/home/user/project_1/foo/foo.feature'
           currentLine: 1
-          mkdirs: ['/home/user/project_1/spec']
+          mockPaths: [
+            '/home/user/project_1/spec',
+            '/home/user/project_1/.rspec'
+          ],
           fileContent:
             """
             """
@@ -170,7 +173,7 @@ describe "SourceInfo", ->
       withSetup
         projectPaths: ['/home/user/my_project']
         testFile: null
-        mkdirs: ['/home/user/my_project/test']
+        mockPaths: ['/home/user/my_project/test']
 
       expect(sourceInfo.projectType()).toBe("test")
 
@@ -178,7 +181,7 @@ describe "SourceInfo", ->
       withSetup
         projectPaths: ['/home/user/my_project']
         testFile: null
-        mkdirs: ['/home/user/my_project/spec']
+        mockPaths: ['/home/user/my_project/spec']
 
       expect(sourceInfo.projectType()).toBe("rspec")
 
@@ -186,7 +189,7 @@ describe "SourceInfo", ->
       withSetup
         projectPaths: ['/home/user/my_project']
         testFile: null
-        mkdirs: ['/home/user/my_project/features']
+        mockPaths: ['/home/user/my_project/features']
 
       expect(sourceInfo.projectType()).toBe("cucumber")
 
@@ -196,7 +199,7 @@ describe "SourceInfo", ->
         config: "ruby-test.testAllCommand": "my_ruby -I test test"
         projectPaths: ['/home/user/my_project']
         testFile: null
-        mkdirs: ['/home/user/my_project/test']
+        mockPaths: ['/home/user/my_project/test']
 
       expect(sourceInfo.testAllCommand()).toBe("my_ruby -I test test")
 
@@ -206,7 +209,7 @@ describe "SourceInfo", ->
         config: "ruby-test.rspecAllCommand": "my_rspec spec"
         projectPaths: ['/home/user/my_project']
         testFile: null
-        mkdirs: ['/home/user/my_project/spec']
+        mockPaths: ['/home/user/my_project/spec']
 
       expect(sourceInfo.testAllCommand()).toBe("my_rspec spec")
 

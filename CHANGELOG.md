@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 0.9.14
+
+* Correctly detect Cucumber feature file when project has .rspec file (#59)
+
 ## Version 0.9.13
 
 * Configurable spec framework and test framework (#57)
