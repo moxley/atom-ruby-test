@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 0.9.15
+
+* Correctly determine framework when no test file is open (#70)
+
 ## Version 0.9.14
 
 * Correctly detect Cucumber feature file when project has .rspec file (#59)

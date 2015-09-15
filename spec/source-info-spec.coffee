@@ -57,9 +57,9 @@ describe "SourceInfo", ->
   describe "::projectPath", ->
     it "is atom.project.getPaths()[0]", ->
       withSetup
-        projectPaths: ['/home/user/my_project']
+        projectPaths: ['/home/user/project_1']
         testFile: null
-      expect(sourceInfo.projectPath()).toBe("/home/user/my_project")
+      expect(sourceInfo.projectPath()).toBe("/home/user/project_1")
 
   # Detect framework, by inspecting a combination of current file name,
   # project subdirectory names, current file content, and configuration value
@@ -135,6 +135,17 @@ describe "SourceInfo", ->
             """
         expect(sourceInfo.testFramework()).toBe("minitest")
 
+      it "when no test file is open, detects Minitest based on configuration value set to 'minitest'", ->
+        withSetup
+          config: "ruby-test.specFramework": "minitest"
+          projectPaths: ['/home/user/project_1']
+          testFile: null
+          currentLine: null
+          mockPaths: ['/home/user/project_1/spec']
+          fileContent: ''
+
+        expect(sourceInfo.testFramework()).toBe("minitest")
+
     describe "Test::Unit detection", ->
       it "assumes Test::Unit when the filename ends with _test.rb, has a method definition, and doesn't have a reference to Minitest", ->
         withSetup
@@ -171,25 +182,25 @@ describe "SourceInfo", ->
   describe "::projectType", ->
     it "correctly detects a test directory", ->
       withSetup
-        projectPaths: ['/home/user/my_project']
+        projectPaths: ['/home/user/project_1']
         testFile: null
-        mockPaths: ['/home/user/my_project/test']
+        mockPaths: ['/home/user/project_1/test']
 
       expect(sourceInfo.projectType()).toBe("test")
 
     it "correctly detecs a spec directory", ->
       withSetup
-        projectPaths: ['/home/user/my_project']
+        projectPaths: ['/home/user/project_1']
         testFile: null
-        mockPaths: ['/home/user/my_project/spec']
+        mockPaths: ['/home/user/project_1/spec']
 
       expect(sourceInfo.projectType()).toBe("rspec")
 
     it "correctly detects a cucumber directory", ->
       withSetup
-        projectPaths: ['/home/user/my_project']
+        projectPaths: ['/home/user/project_1']
         testFile: null
-        mockPaths: ['/home/user/my_project/features']
+        mockPaths: ['/home/user/project_1/features']
 
       expect(sourceInfo.projectType()).toBe("cucumber")
 
@@ -197,9 +208,9 @@ describe "SourceInfo", ->
     it "is the atom config for 'ruby-test.testAllCommand'", ->
       withSetup
         config: "ruby-test.testAllCommand": "my_ruby -I test test"
-        projectPaths: ['/home/user/my_project']
+        projectPaths: ['/home/user/project_1']
         testFile: null
-        mockPaths: ['/home/user/my_project/test']
+        mockPaths: ['/home/user/project_1/test']
 
       expect(sourceInfo.testAllCommand()).toBe("my_ruby -I test test")
 
@@ -207,9 +218,9 @@ describe "SourceInfo", ->
     it "is the atom config for 'ruby-test.rspecAllCommand' if spec directory exists", ->
       withSetup
         config: "ruby-test.rspecAllCommand": "my_rspec spec"
-        projectPaths: ['/home/user/my_project']
+        projectPaths: ['/home/user/project_1']
         testFile: null
-        mockPaths: ['/home/user/my_project/spec']
+        mockPaths: ['/home/user/project_1/spec']
 
       expect(sourceInfo.testAllCommand()).toBe("my_rspec spec")
 

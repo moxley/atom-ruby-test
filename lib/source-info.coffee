@@ -136,9 +136,9 @@ module.exports =
 
     projectType: ->
       if fs.existsSync(@projectPath() + '/test')
-        'test'
+        atom.config.get("ruby-test.testFramework") || 'test'
       else if fs.existsSync(@projectPath() + '/spec')
-        'rspec'
+        atom.config.get("ruby-test.specFramework") || 'rspec'
       else if fs.existsSync(@projectPath() + '/features')
         'cucumber'
       else
