@@ -18,7 +18,7 @@ module.exports =
       @process = @newProcess(@fullCommand())
 
     fullCommand: ->
-      "cd #{@escape(@params.cwd())} && #{@params.command()}; exit\n"
+      @_joinAnd("cd #{@escape(@params.cwd())}", "#{@params.command()}; exit\n")
 
     escape: (str) ->
       charsToEscape = "\\ \t\"'$()[]<>&|*;~`#"
@@ -49,3 +49,7 @@ module.exports =
       outputCharacters = true
       process = new @processor params, outputCharacters
       process
+
+    _joinAnd: (commands...) ->
+      joiner = /fish/.test(@currentShell) ? '; and ' : ' && '
+      commands.join(joiner)
