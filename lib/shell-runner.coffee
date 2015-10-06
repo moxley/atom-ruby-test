@@ -51,5 +51,5 @@ module.exports =
       process
 
     _joinAnd: (commands...) ->
-      joiner = /fish/.test(@currentShell) ? '; and ' : ' && '
+      joiner = if /fish/.test(@currentShell) then '; and ' else ' && '
       commands.join(joiner)
