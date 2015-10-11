@@ -39,7 +39,7 @@ Open the test file you want to run, then issue one of the following:
 * Run previous test
 * Configure the shell commands that run the tests
 * Supports Ruby managers, like `rvm` and `rbenv`
-* Supports bash and z-shell
+* Supports bash, z-shell, fish
 * Supports Test::Unit, Rspec, Minitest, and Cucumber
 
 ## Helpful Tips
