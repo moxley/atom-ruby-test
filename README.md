@@ -1,5 +1,7 @@
 # ruby-test package
 
+[![Build Status](https://api.travis-ci.org/moxley/atom-ruby-test.svg?branch=master)](https://travis-ci.org/moxley/atom-ruby-test)
+
 Run Ruby tests, Rspec examples, and Cucumber features from Atom,
 quickly and easily.
 
