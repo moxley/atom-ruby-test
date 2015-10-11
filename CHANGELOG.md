@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 0.9.16
+
+* Fish support (#31, #72, #73)
+
 ## Version 0.9.15
 
 * Correctly determine framework when no test file is open (#70)
