@@ -31,7 +31,7 @@ end
 
 Start the server: `~/bin/command_server`.
 
-In the ruby-test settings, append `| nc VM_ADDR` to each of the test
+In the ruby-test settings, append `| nc VM_ADDR 2000` to each of the test
 commands you use. Replace `VM_ADDR` with the IP address or hostname of the
 VM. `nc` (netcat) will forward the test commands to the server, which will
 then execute the commands.
