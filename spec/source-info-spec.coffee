@@ -6,16 +6,15 @@ describe "SourceInfo", ->
   sourceInfo = null
 
   withSetup = (opts) ->
-    atom.project =
-      getPaths: ->
-        ["project_1"]
-      relativize: (filePath) ->
-        for path in @getPaths()
-          index = filePath.indexOf(path)
-          if index >= 0
-            newPath = filePath.slice index + path.length, filePath.length
-            newPath = newPath.slice(1, newPath.length) if newPath[0] == '/'
-            return newPath
+    atom.project.getPaths = ->
+      ["project_1"]
+    atom.project.relativize = (filePath) ->
+      for path in @getPaths()
+        index = filePath.indexOf(path)
+        if index >= 0
+          newPath = filePath.slice index + path.length, filePath.length
+          newPath = newPath.slice(1, newPath.length) if newPath[0] == '/'
+          return newPath
 
     editor = {buffer: {file: {path: "foo_test.rb"}}}
     cursor =
@@ -52,7 +51,6 @@ describe "SourceInfo", ->
   beforeEach ->
     editor = null
     sourceInfo = null
-    atom.project = null
 
   describe "::projectPath", ->
     it "is atom.project.getPaths()[0]", ->
@@ -281,6 +279,3 @@ describe "SourceInfo", ->
         config: "ruby-test.shell": "my_bash"
 
       expect(sourceInfo.currentShell()).toBe('my_bash')
-
-  afterEach ->
-    delete atom.project
