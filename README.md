@@ -46,6 +46,7 @@ Open the test file you want to run, then issue one of the following:
 
 * Use ruby-test in conjunction with [project-manager](https://atom.io/packages/project-manager)
   to maintain different ruby-test settings per project.
+* [Run ruby-test on a project that runs in a VM or Vagrant](https://github.com/moxley/atom-ruby-test/blob/master/doc/running_against_vm.md)
 
 ## Contributing
 
