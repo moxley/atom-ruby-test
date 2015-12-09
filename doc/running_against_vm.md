@@ -29,9 +29,16 @@ loop do
 end
 ```
 
-Start the server: `~/bin/command_server`.
+Start the server: `~/bin/command_server` from your project's directory in the Vagrant VM.
 
-In the ruby-test settings, append `| nc VM_ADDR 2000` to each of the test
-commands you use. Replace `VM_ADDR` with the IP address or hostname of the
+In the ruby-test settings, wrap each test command in an `echo ''`, and append `| nc VM_ADDR 2000`. Replace `VM_ADDR` with the IP address or hostname of the
 VM. `nc` (netcat) will forward the test commands to the server, which will
 then execute the commands.
+
+For example:
+
+rspecFileCommand:
+
+```
+echo 'bundle exec spring rspec {relative_path}' | nc 10.11.12.13 2000
+```
