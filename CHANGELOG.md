@@ -1,5 +1,10 @@
 # Change Log
 
+## Version 0.9.17
+
+* Fix broken test file path calculation for multi-path projects
+* Fix Minitest regular expression calculation for single test executions.
+
 ## Version 0.9.16
 
 * Fish support (#31, #72, #73)
