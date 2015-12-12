@@ -56,29 +56,32 @@ module.exports =
       @_minitestRegExp = @extractMinitestRegExp(file.testHeaderLine, file.testStyle)
 
     extractMinitestRegExp: (testHeaderLine, testStyle)->
-      match = testHeaderLine? and testHeaderLine.match(@regExpForTestStyle[testStyle]) or null
+      regExp = @regExpForTestStyle[testStyle]
+      match = testHeaderLine? and testHeaderLine.match(regExp) or null
       if match
         match[1]
       else
         ""
 
-    isMiniTest: ->
-      return @_isMiniTest if @_isMiniTest != undefined
-      @fileAnalysis().isMiniTest
+    fileFramework: ->
+      @fileAnalysis() unless @_fileAnalysis
+      @_fileAnalysis.framework
+
+    testStyle: ->
+      @fileAnalysis() unless @_fileAnalysis
+      @_fileAnalysis.testStyle
 
     fileAnalysis: ->
       return @_fileAnalysis if @_fileAnalysis != undefined
 
       @_fileAnalysis =
         testHeaderLine: null
-        isSpec: false
-        isUnit: false
-        isRSpec: false
-        isMiniTest: false
+        testStyle: null
+        framework: null
 
       editor = atom.workspace.getActiveTextEditor()
       i = @currentLine() - 1
-      specRegExp = new RegExp(/\b(should|test|it)\s+['""'](.*)['""']\s+do\b/)
+      specRegExp = new RegExp(/\b(?:should|test|it)\s+['"](.*)['"]\s+do\b/)
       rspecRequireRegExp = new RegExp(/^require(\s+)['"](rails|spec)_helper['"]$/)
       minitestClassRegExp = new RegExp(/class\s(.*)<(\s?|\s+)Minitest::Test/)
       minitestMethodRegExp = new RegExp(/^(\s+)def\s(.*)$/)
@@ -87,32 +90,31 @@ module.exports =
 
         if not @_fileAnalysis.testHeaderLine
           # check if it is rspec or minitest spec
-          if specRegExp.test(sourceLine)
-            @_fileAnalysis.isSpec = true
+          if res = sourceLine.match(specRegExp)
+            @_minitestRegExp = res[1]
+            @_fileAnalysis.testStyle = 'spec'
             @_fileAnalysis.testHeaderLine = sourceLine
 
           # check if it is minitest unit
           else if minitestMethodRegExp.test(sourceLine)
-            @_fileAnalysis.isUnit = true
             @_fileAnalysis.testStyle = 'unit'
             @_fileAnalysis.testHeaderLine = sourceLine
 
         # if it is spec and has require spec_helper which means it is rspec spec
         else if rspecRequireRegExp.test(sourceLine)
-          @_fileAnalysis.isRSpec = true
-          @_fileAnalysis.isSpec = true
           @_fileAnalysis.testStyle = 'spec'
+          @_fileAnalysis.framework = 'rspec'
           break
 
         # if it is unit test and inherit from Minitest::Unit
-        else if @_fileAnalysis.isUnit && minitestClassRegExp.test(sourceLine)
-          @_fileAnalysis.isMiniTest = true
+        else if @_fileAnalysis.testStyle == 'unit' && minitestClassRegExp.test(sourceLine)
+          @_fileAnalysis.framework = 'minitest'
           return @_fileAnalysis
 
         i--
 
-      if not @_fileAnalysis.isRSpec and @_fileAnalysis.isSpec
-        @_fileAnalysis.isMiniTest = true
+      if @_fileAnalysis.framework != 'rspec' and @_fileAnalysis.testStyle == 'spec'
+        @_fileAnalysis.framework = 'minitest'
 
       @_fileAnalysis
 
@@ -132,7 +134,7 @@ module.exports =
             atom.config.get("ruby-test.testFramework")
           else if matches[1] == 'spec' and atom.config.get("ruby-test.specFramework")
             atom.config.get("ruby-test.specFramework")
-          else if @isMiniTest()
+          else if @fileFramework() == 'minitest' or (not @fileFramework() and matches[1] == 'test' and @testStyle() == 'spec')
             'minitest'
           else if matches[1] == 'spec'
             'rspec'
