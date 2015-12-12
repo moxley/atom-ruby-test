@@ -7,44 +7,41 @@ describe "SourceInfo", ->
 
   withSetup = (opts) ->
     atom.project.getPaths = ->
-      ["project_1"]
+      ["/projects/project_1", "/projects/project_2"]
     atom.project.relativize = (filePath) ->
-      for path in @getPaths()
-        index = filePath.indexOf(path)
+      for folderPath in @getPaths()
+        index = filePath.indexOf(folderPath)
         if index >= 0
-          newPath = filePath.slice index + path.length, filePath.length
+          newPath = filePath.slice index + folderPath.length, filePath.length
           newPath = newPath.slice(1, newPath.length) if newPath[0] == '/'
           return newPath
 
-    editor = {buffer: {file: {path: "foo_test.rb"}}}
-    cursor =
-      getBufferRow: ->
-        99
+    editor = {buffer: {file: {path: "/projects/project_2/test/foo_test.rb"}}}
+    cursor = getBufferRow: -> 99
     editor.getLastCursor = -> cursor
-    editor.lineTextForBufferRow = (line) ->
-      ""
+    editor.lineTextForBufferRow = (line) -> ""
     spyOn(atom.workspace, 'getActiveTextEditor').andReturn(editor)
     sourceInfo = new SourceInfo()
 
-    if opts.testFile
+    if 'testFile' of opts
       editor.buffer.file.path = opts.testFile
 
-    if opts.projectPaths
+    if 'projectPaths' of opts
       atom.project.getPaths = -> opts.projectPaths
 
-    if opts.currentLine
+    if 'currentLine' of opts
       cursor.getBufferRow = -> opts.currentLine - 1
 
-    if opts.fileContent
+    if 'fileContent' of opts
       lines = opts.fileContent.split("\n")
       editor.lineTextForBufferRow = (row) ->
         lines[row]
 
-    if opts.config
+    if 'config' of opts
       for key, value of opts.config
         atom.config.set(key, value)
 
-    if opts.mockPaths
+    if 'mockPaths' of opts
       spyOn(fs, 'existsSync').andCallFake (path) ->
         path in opts.mockPaths
 
@@ -53,11 +50,18 @@ describe "SourceInfo", ->
     sourceInfo = null
 
   describe "::projectPath", ->
-    it "is atom.project.getPaths()[0]", ->
-      withSetup
-        projectPaths: ['/home/user/project_1']
-        testFile: null
-      expect(sourceInfo.projectPath()).toBe("/home/user/project_1")
+    describe "with no testFile", ->
+      it "is atom.project.getPaths()[0]", ->
+        withSetup
+          projectPaths: ['/projects/project_1', '/projects/project_2']
+          testFile: null
+        expect(sourceInfo.projectPath()).toBe("/projects/project_1")
+    describe "with a testFile", ->
+      it "is the path within atom.project.getPaths() that is an ancestor of the testFile path", ->
+        withSetup
+          projectPaths: ['/projects/project_1', '/projects/project_2']
+          testFile: '/projects/project_2/foo/bar_test.rb'
+        expect(sourceInfo.projectPath()).toBe("/projects/project_2")
 
   # Detect framework, by inspecting a combination of current file name,
   # project subdirectory names, current file content, and configuration value
@@ -250,8 +254,8 @@ describe "SourceInfo", ->
   describe "::activeFile", ->
     it "is the project-relative path for the current file path", ->
       withSetup
-        projectPaths: ['/home/user/project_1']
-        testFile: '/home/user/project_1/bar/foo_test.rb'
+        projectPaths: ['/projects/project_1', '/projects/project_2']
+        testFile: '/projects/project_2/bar/foo_test.rb'
       expect(sourceInfo.activeFile()).toBe("bar/foo_test.rb")
 
   describe "::currentLine", ->

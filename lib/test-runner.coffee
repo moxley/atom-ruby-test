@@ -19,7 +19,7 @@ module.exports =
       write:   @params.write
       exit:    @params.exit
       command: @command
-      cwd:     @testParams.projectPath
+      cwd:     => @testParams.projectPath()
       currentShell: @testParams.currentShell()
 
     command: =>

@@ -19,14 +19,6 @@ describe "TestRunner", ->
     spyOn(SourceInfo.prototype, 'testSingleCommand').andReturn('fooTestCommand {relative_path}:{line_number}')
 
   describe "::run", ->
-    it "Instantiates ShellRunner with expected params", ->
-
-      runner = new TestRunner(@testRunnerParams)
-      runner.run()
-
-      expect(ShellRunner.prototype.initialize).toHaveBeenCalledWith(runner.shellRunnerParams())
-      expect(@testRunnerParams.setTestInfo).toHaveBeenCalledWith("fooTestCommand fooTestFile")
-
     it "constructs a single-test command when testScope is 'single'", ->
       @testRunnerParams.testScope = "single"
       runner = new TestRunner(@testRunnerParams)
