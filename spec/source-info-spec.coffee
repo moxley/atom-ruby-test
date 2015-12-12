@@ -101,7 +101,7 @@ describe "SourceInfo", ->
           config: "ruby-test.specFramework": ""
           projectPaths: ['/home/user/project_1']
           testFile: '/home/user/project_1/bar/foo_test.rb'
-          currentLine: 10
+          currentLine: 3
           fileContent:
             """
             describe "something" do
@@ -264,7 +264,26 @@ describe "SourceInfo", ->
         currentLine: 100
       expect(sourceInfo.currentLine()).toBe(100)
 
-  describe "::extractMinitestRegExp", ->
+  describe "::minitestRegExp", ->
+    it "correctly returns the matching regex for spec", ->
+      withSetup
+        projectPaths: ['/projects/project_1']
+        testFile: '/projects/project_1/bar/foo_test.rb'
+        currentLine: 6
+        fileContent:
+          """
+          require 'minitest/spec'
+          require 'minitest/autorun'
+
+          describe "Addition" do
+            it "adds" do
+              (1 + 1).must_equal 2
+            end
+          end
+          """
+      expect(sourceInfo.minitestRegExp()).toBe("adds")
+
+  describe "::minitestRegExp", ->
     it "correctly returns the matching regex for spec", ->
       sourceInfo = new SourceInfo()
       expect(sourceInfo.extractMinitestRegExp(" it \"test something\" do", "spec")).toBe("test something")
