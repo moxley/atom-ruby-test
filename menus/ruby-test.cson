@@ -4,6 +4,9 @@
     { 'label': 'Show ruby-test', 'command': 'ruby-test:toggle' }
     { 'label': 'Run ruby-test for file', 'command': 'ruby-test:test-file' }
     { 'label': 'Run ruby-test at line', 'command': 'ruby-test:test-single' }
+    { 'label': 'Run ruby-test for all tests', 'command': 'ruby-test:test-all' }
+    { 'label': 'Run ruby-test for previous tests', 'command': 'ruby-test:test-previous' }
+    { 'label': 'Cancel ruby-test', 'command': 'ruby-test:cancel' }
   ]
 
 'menu': [
@@ -15,6 +18,9 @@
         { 'label': 'Toggle Panel', 'command': 'ruby-test:toggle' }
         { 'label': 'Run test file', 'command': 'ruby-test:test-file' }
         { 'label': 'Run single test', 'command': 'ruby-test:test-single' }
+        { 'label': 'Run all tests', 'command': 'ruby-test:test-all' }
+        { 'label': 'Run previous tests', 'command': 'ruby-test:test-previous' }
+        { 'label': 'Cancel running tests', 'command': 'ruby-test:cancel' }
       ]
     ]
   }
