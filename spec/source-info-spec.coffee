@@ -95,6 +95,24 @@ describe "SourceInfo", ->
             """
         expect(sourceInfo.testFramework()).toBe("rspec")
 
+      it "selects RSpec for spec file if spec_helper is required with require_relative", ->
+        withSetup
+          config: "ruby-test.specFramework": ""
+          projectPaths: ['/home/user/project_1']
+          testFile: '/home/user/project_1/bar/foo_spec.rb'
+          currentLine: 5
+          fileContent:
+            """
+            require_relative '../spec_helper'
+
+            describe "something" do
+              it "test something" do
+                expect('foo').to eq 'foo'
+              end
+            end
+            """
+        expect(sourceInfo.testFramework()).toBe("rspec")
+
     describe "Minitest detection", ->
       it "is Minitest if filename matches _test.rb, and file contains specs", ->
         withSetup
