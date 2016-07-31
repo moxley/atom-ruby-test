@@ -83,6 +83,7 @@ module.exports =
       i = @currentLine() - 1
       specRegExp = new RegExp(/\b(?:should|test|it)\s+['"](.*)['"]\s+do\b/)
       rspecRequireRegExp = new RegExp(/^require.*(rails|spec)_helper/)
+      rspecAssertionRegExp = new RegExp(/^\s*expect\(/)
       minitestClassRegExp = new RegExp(/class\s(.*)<(\s?|\s+)Minitest::Test/)
       minitestMethodRegExp = new RegExp(/^(\s+)def\s(.*)$/)
       while i >= 0
@@ -101,7 +102,12 @@ module.exports =
             @_fileAnalysis.testHeaderLine = sourceLine
 
         # if it is spec and has require spec_helper which means it is rspec spec
-        else if rspecRequireRegExp.test(sourceLine)
+        if rspecRequireRegExp.test(sourceLine)
+          @_fileAnalysis.testStyle = 'spec'
+          @_fileAnalysis.framework = 'rspec'
+          break
+
+        else if rspecAssertionRegExp.test(sourceLine)
           @_fileAnalysis.testStyle = 'spec'
           @_fileAnalysis.framework = 'rspec'
           break

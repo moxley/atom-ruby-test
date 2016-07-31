@@ -100,11 +100,22 @@ describe "SourceInfo", ->
           config: "ruby-test.specFramework": ""
           projectPaths: ['/home/user/project_1']
           testFile: '/home/user/project_1/bar/foo_spec.rb'
-          currentLine: 5
+          currentLine: 2
           fileContent:
             """
             require_relative '../spec_helper'
 
+            """
+        expect(sourceInfo.testFramework()).toBe("rspec")
+
+      it "selects RSpec for spec file if expect() is called", ->
+        withSetup
+          config: "ruby-test.specFramework": ""
+          projectPaths: ['/home/user/project_1']
+          testFile: '/home/user/project_1/bar/foo_spec.rb'
+          currentLine: 5
+          fileContent:
+            """
             describe "something" do
               it "test something" do
                 expect('foo').to eq 'foo'
