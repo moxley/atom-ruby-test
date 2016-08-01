@@ -1,6 +1,7 @@
 TestRunner = require '../lib/test-runner'
 SourceInfo = require '../lib/source-info'
 ShellRunner = require '../lib/shell-runner'
+Command = require '../lib/command'
 
 describe "TestRunner", ->
   beforeEach ->
@@ -15,8 +16,8 @@ describe "TestRunner", ->
     spyOn(SourceInfo.prototype, 'activeFile').andReturn('fooTestFile')
     spyOn(SourceInfo.prototype, 'currentLine').andReturn(100)
     spyOn(SourceInfo.prototype, 'minitestRegExp').andReturn('test foo')
-    spyOn(SourceInfo.prototype, 'testFileCommand').andReturn('fooTestCommand {relative_path}')
-    spyOn(SourceInfo.prototype, 'testSingleCommand').andReturn('fooTestCommand {relative_path}:{line_number}')
+    spyOn(Command, 'testFileCommand').andReturn('fooTestCommand {relative_path}')
+    spyOn(Command, 'testSingleCommand').andReturn('fooTestCommand {relative_path}:{line_number}')
 
   describe "::run", ->
     it "constructs a single-test command when testScope is 'single'", ->
@@ -26,7 +27,7 @@ describe "TestRunner", ->
       expect(@testRunnerParams.setTestInfo).toHaveBeenCalledWith("fooTestCommand fooTestFile:100")
 
     it "constructs a single-minitest command when testScope is 'single'", ->
-      SourceInfo.prototype.testSingleCommand.andReturn('fooTestCommand {relative_path} -n \"/{regex}/\"')
+      Command.testSingleCommand.andReturn('fooTestCommand {relative_path} -n \"/{regex}/\"')
       @testRunnerParams.testScope = "single"
       runner = new TestRunner(@testRunnerParams)
       runner.run()

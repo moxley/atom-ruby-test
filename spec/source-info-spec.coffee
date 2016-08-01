@@ -235,51 +235,6 @@ describe "SourceInfo", ->
 
       expect(sourceInfo.projectType()).toBe("cucumber")
 
-  describe "::testAllCommand", ->
-    it "is the atom config for 'ruby-test.testAllCommand'", ->
-      withSetup
-        config: "ruby-test.testAllCommand": "my_ruby -I test test"
-        projectPaths: ['/home/user/project_1']
-        testFile: null
-        mockPaths: ['/home/user/project_1/test']
-
-      expect(sourceInfo.testAllCommand()).toBe("my_ruby -I test test")
-
-  describe "::rspecAllCommand", ->
-    it "is the atom config for 'ruby-test.rspecAllCommand' if spec directory exists", ->
-      withSetup
-        config: "ruby-test.rspecAllCommand": "my_rspec spec"
-        projectPaths: ['/home/user/project_1']
-        testFile: null
-        mockPaths: ['/home/user/project_1/spec']
-
-      expect(sourceInfo.testAllCommand()).toBe("my_rspec spec")
-
-  describe "::rspecFileCommand", ->
-    it "is the atom config for 'ruby-test.rspecFileCommand' if active file is _spec.rb and spec framework is rspec", ->
-      withSetup
-        config:
-          "ruby-test.specFramework": "rspec"
-          "ruby-test.rspecFileCommand": "my_rspec --tty {relative_path}"
-        projectPaths: ['/home/user/project_1']
-        testFile: '/home/user/project_1/bar/foo_spec.rb'
-        currentLine: 1
-        fileContent: ''
-
-      expect(sourceInfo.testFileCommand()).toBe("my_rspec --tty {relative_path}")
-
-  describe "::testSingleCommand", ->
-    it "is the atom config for 'ruby-test.testSingleCommand' if active file is _test.rb and test framework is test", ->
-      withSetup
-        config:
-          "ruby-test.testFramework": "test"
-          "ruby-test.testSingleCommand": "my_ruby -I test {relative_path}:{line_number}"
-        projectPaths: ['/home/user/project_1']
-        testFile: '/home/user/project_1/bar/foo_test.rb'
-        currentLine: 1
-        fileContent: ''
-      expect(sourceInfo.testSingleCommand()).toBe("my_ruby -I test {relative_path}:{line_number}")
-
   describe "::activeFile", ->
     it "is the project-relative path for the current file path", ->
       withSetup

@@ -28,16 +28,6 @@ module.exports =
       else
         defaultPath
 
-    testFileCommand: ->
-      atom.config.get("ruby-test.#{@testFramework()}FileCommand")
-
-    testAllCommand: ->
-      configName = "ruby-test.#{@testFramework()}AllCommand"
-      atom.config.get("ruby-test.#{@testFramework()}AllCommand")
-
-    testSingleCommand: ->
-      atom.config.get("ruby-test.#{@testFramework()}SingleCommand")
-
     activeFile: ->
       @_activeFile ||= (fp = @filePath()) and atom.project.relativize(fp)
 

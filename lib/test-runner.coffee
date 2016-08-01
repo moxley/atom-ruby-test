@@ -1,5 +1,6 @@
 ShellRunner = require './shell-runner'
 SourceInfo = require './source-info'
+Command = require './command'
 
 module.exports =
   class TestRunner
@@ -8,7 +9,7 @@ module.exports =
 
     initialize: (params) ->
       @params = params
-      @testParams = new SourceInfo()
+      @sourceInfo = new SourceInfo()
 
     run: ->
       @shell = new ShellRunner(@shellRunnerParams())
@@ -19,19 +20,15 @@ module.exports =
       write:   @params.write
       exit:    @params.exit
       command: @command
-      cwd:     => @testParams.projectPath()
-      currentShell: @testParams.currentShell()
+      cwd:     => @sourceInfo.projectPath()
+      currentShell: @sourceInfo.currentShell()
 
     command: =>
-      cmd = if @params.testScope == "single"
-          @testParams.testSingleCommand()
-        else if @params.testScope == "all"
-          @testParams.testAllCommand()
-        else
-          @testParams.testFileCommand()
-      cmd.replace('{relative_path}', @testParams.activeFile()).
-          replace('{line_number}', @testParams.currentLine()).
-          replace('{regex}', @testParams.minitestRegExp())
+      framework = @sourceInfo.testFramework()
+      cmd = Command.testCommand(@params.testScope, framework)
+      cmd.replace('{relative_path}', @sourceInfo.activeFile()).
+          replace('{line_number}', @sourceInfo.currentLine()).
+          replace('{regex}', @sourceInfo.minitestRegExp())
 
     cancel: ->
       @shell.kill()
