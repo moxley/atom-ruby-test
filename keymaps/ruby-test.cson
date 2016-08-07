@@ -8,6 +8,7 @@
 # For more detailed documentation see
 # https://atom.io/docs/latest/advanced/keymaps
 '.platform-darwin atom-workspace':
+  'escape': 'ruby-test:close'
   'cmd-ctrl-x': 'ruby-test:toggle'
   'cmd-ctrl-y': 'ruby-test:test-all'
   'cmd-ctrl-t': 'ruby-test:test-file'
@@ -20,5 +21,6 @@
   'ctrl-shift-e': 'ruby-test:test-previous'
   'ctrl-shift-r': 'ruby-test:test-single'
   'ctrl-shift-t': 'ruby-test:test-file'
+  'escape': 'ruby-test:close'
   'ctrl-shift-x': 'ruby-test:toggle'
   'ctrl-shift-y': 'ruby-test:test-all'

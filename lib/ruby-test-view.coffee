@@ -21,6 +21,7 @@ class RubyTestView extends View
 
   initialize: (serializeState) ->
     atom.commands.add "atom-workspace", "ruby-test:toggle", => @toggle()
+    atom.commands.add "atom-workspace", "ruby-test:close", => @closePanel()
     atom.commands.add "atom-workspace", "ruby-test:test-file", => @testFile()
     atom.commands.add "atom-workspace", "ruby-test:test-single", => @testSingle()
     atom.commands.add "atom-workspace", "ruby-test:test-previous", => @testPrevious()

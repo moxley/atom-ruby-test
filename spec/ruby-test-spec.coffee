@@ -28,3 +28,18 @@ describe "RubyTest", ->
         expect(workspaceElement.querySelector('.ruby-test')).toExist()
         atom.commands.dispatch workspaceElement, 'ruby-test:toggle'
         expect(workspaceElement.querySelector('.ruby-test')).not.toExist()
+
+  describe "when the ruby-test:close event is triggered", ->
+    it "detaches the view", ->
+      expect(workspaceElement.querySelector('.ruby-test')).not.toExist()
+
+      # This is an activation event, triggering it will cause the package to be
+      # activated.
+      atom.commands.dispatch workspaceElement, 'ruby-test:toggle'
+
+      waitsForPromise ->
+        activationPromise
+
+      runs ->
+        atom.commands.dispatch workspaceElement, 'ruby-test:close'
+        expect(workspaceElement.querySelector('.ruby-test')).not.toExist()
