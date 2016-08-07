@@ -13,8 +13,14 @@ module.exports =
 
     run: ->
       @shell = new ShellRunner(@shellRunnerParams())
-      @params.setTestInfo(@command())
-      @shell.run()
+      cmd = @command()
+      if cmd
+        @params.setTestInfo(cmd)
+        @shell.run()
+        true
+      else
+        @params.setTestInfo("Failed to calculate test command")
+        false
 
     shellRunnerParams: ->
       write:   @params.write
@@ -26,9 +32,9 @@ module.exports =
     command: =>
       framework = @sourceInfo.testFramework()
       cmd = Command.testCommand(@params.testScope, framework)
-      cmd.replace('{relative_path}', @sourceInfo.activeFile()).
-          replace('{line_number}', @sourceInfo.currentLine()).
-          replace('{regex}', @sourceInfo.minitestRegExp())
+      cmd and cmd.replace('{relative_path}', @sourceInfo.activeFile()).
+      replace('{line_number}', @sourceInfo.currentLine()).
+      replace('{regex}', @sourceInfo.minitestRegExp())
 
     cancel: ->
       @shell.kill()

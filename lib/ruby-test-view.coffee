@@ -21,12 +21,13 @@ class RubyTestView extends View
 
   initialize: (serializeState) ->
     atom.commands.add "atom-workspace", "ruby-test:toggle", => @toggle()
-    atom.commands.add "atom-workspace", "ruby-test:test-file", => @testFile()
-    atom.commands.add "atom-workspace", "ruby-test:test-single", => @testSingle()
+    atom.commands.add "atom-workspace", "ruby-test:test-all", => @runTest("all")
+    atom.commands.add "atom-workspace", "ruby-test:test-file", => @runTest("file")
+    atom.commands.add "atom-workspace", "ruby-test:test-single", => @runTest("single")
     atom.commands.add "atom-workspace", "ruby-test:test-previous", => @testPrevious()
-    atom.commands.add "atom-workspace", "ruby-test:test-all", => @testAll()
     atom.commands.add "atom-workspace", "ruby-test:cancel", => @cancelTest()
     new ResizeHandle(@)
+    window.rubyTestView = @
 
   # Returns an object that can be retrieved when package is activated
   serialize: ->
@@ -49,28 +50,21 @@ class RubyTestView extends View
         @spinner.hide()
         @setTestInfo("No tests running")
 
-  testFile: ->
-    @runTest()
-
-  testSingle: ->
-    @runTest(testScope: "single")
-
-  testAll: ->
-    @runTest(testScope: "all")
-
   testPrevious: ->
     return unless @runner
     @saveFile()
     @newTestView()
     @runner.run()
 
-  runTest: (overrideParams) ->
+  runTest: (scope) ->
     @saveFile()
     @newTestView()
-    params = _.extend({}, @testRunnerParams(), overrideParams || {})
+    params = _.extend({}, @testRunnerParams(), testScope: scope)
     @runner = new TestRunner(params)
-    @runner.run()
-    @spinner.show()
+    if @runner.run()
+      @spinner.show()
+    else
+      @write("Failed to calculate test command")
 
   newTestView: ->
     @output = ''
