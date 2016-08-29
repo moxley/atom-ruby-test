@@ -50,7 +50,7 @@ class RubyTestView extends View
         @setTestInfo("No tests running")
 
   testFile: ->
-    @runTest()
+    @runTest(testScope: "file")
 
   testSingle: ->
     @runTest(testScope: "single")
