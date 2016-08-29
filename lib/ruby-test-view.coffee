@@ -1,6 +1,5 @@
-{$,} = require 'atom-space-pen-views'
 _ = require 'underscore-plus'
-{View} = require 'atom-space-pen-views'
+{$,View} = require 'atom-space-pen-views'
 TestRunner = require './test-runner'
 ResizeHandle = require './resize-handle'
 Utility = require './utility'
