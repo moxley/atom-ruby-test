@@ -1,8 +1,10 @@
+{$,} = require 'atom-space-pen-views'
 _ = require 'underscore-plus'
 {View} = require 'atom-space-pen-views'
 TestRunner = require './test-runner'
 ResizeHandle = require './resize-handle'
 Utility = require './utility'
+SourceInfo = require './source-info'
 Convert = require 'ansi-to-html'
 
 module.exports =
@@ -20,6 +22,17 @@ class RubyTestView extends View
         @pre "", outlet: 'results'
 
   initialize: (serializeState) ->
+    sourceInfo = new SourceInfo()
+    @results.on 'click', (e) ->
+      if e.target?.href
+        line = $(e.target).data('line')
+        file = $(e.target).data('file')
+        if !file.startsWith("/")
+          file = "#{sourceInfo.projectPath()}/#{file}"
+
+        promise = atom.workspace.open(file, { searchAllPanes: true, initialLine: line })
+        promise.done (editor) ->
+          editor.setCursorBufferPosition([line-1, 0])
     atom.commands.add "atom-workspace", "ruby-test:toggle", => @toggle()
     atom.commands.add "atom-workspace", "ruby-test:test-file", => @testFile()
     atom.commands.add "atom-workspace", "ruby-test:test-single", => @testSingle()
@@ -97,7 +110,9 @@ class RubyTestView extends View
     @spinner.hide() if @spinner
     @output ||= ''
     convert = new Convert(escapeXML: true)
-    converted = convert.toHtml(str)
+    converted = convert.toHtml(str).replace /[^\s<>\[\]]*\.rb:[0-9]+/g, (s) =>
+      [file, line] = s.split(":")
+      "<a href=\"#{file}\" data-line=\"#{line}\" data-file=\"#{file}\">#{s}</a>"
     @output += converted
     @flush()
 
