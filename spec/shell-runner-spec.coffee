@@ -19,6 +19,7 @@ describe "ShellRunner", ->
     @runner = new ShellRunner(@params)
 
   describe '::run', ->
+    # This fails
     it "appends to writer", ->
       @runner.run()
       waitsFor ->
