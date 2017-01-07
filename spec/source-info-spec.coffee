@@ -279,10 +279,3 @@ describe "SourceInfo", ->
     it "should return empty string if no match", ->
       sourceInfo = new SourceInfo()
       expect(sourceInfo.extractMinitestRegExp("test something", "spec")).toBe("")
-
-  describe "::currentShell", ->
-    it "when ruby-test.shell is null", ->
-      withSetup
-        config: "ruby-test.shell": "my_bash"
-
-      expect(sourceInfo.currentShell()).toBe('my_bash')

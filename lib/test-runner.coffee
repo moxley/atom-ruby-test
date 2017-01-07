@@ -1,27 +1,21 @@
-ShellRunner = require './shell-runner'
 SourceInfo = require './source-info'
 Command = require './command'
 
 module.exports =
   class TestRunner
-    constructor: (params) ->
-      @initialize params
+    constructor: (params, terminal) ->
+      @initialize(params, terminal)
 
-    initialize: (params) ->
+    initialize: (params, terminal) ->
+      @terminal = terminal
       @params = params
       @sourceInfo = new SourceInfo()
 
     run: ->
-      @shell = new ShellRunner(@shellRunnerParams())
-      @params.setTestInfo(@command())
-      @shell.run()
-
-    shellRunnerParams: ->
-      write:   @params.write
-      exit:    @params.exit
-      command: @command
-      cwd:     => @sourceInfo.projectPath()
-      currentShell: @sourceInfo.currentShell()
+      if atom.packages.isPackageDisabled('platformio-ide-terminal')
+        alert("Platformio IDE Terminal package is disabled. It must be enabled to run tests.")
+        return
+      @terminal.run([@command()])
 
     command: =>
       framework = @sourceInfo.testFramework()
@@ -29,6 +23,3 @@ module.exports =
       cmd.replace('{relative_path}', @sourceInfo.activeFile()).
           replace('{line_number}', @sourceInfo.currentLine()).
           replace('{regex}', @sourceInfo.minitestRegExp())
-
-    cancel: ->
-      @shell.kill()

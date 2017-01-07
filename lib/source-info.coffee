@@ -15,9 +15,6 @@ module.exports =
       unit: /def\s(.*?)$/
       spec: /(?:"|')(.*?)(?:"|')/
 
-    currentShell: ->
-      atom.config.get('ruby-test.shell') || 'bash'
-
     projectPath: ->
       defaultPath = atom.project.getPaths()[0]
       if @filePath()

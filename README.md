@@ -14,9 +14,6 @@ Click the `Install` button.
 
 ## Configure
 
-IMPORTANT: Before configuring ruby-test, toggle to the test panel to activate
-the package: `cmd-ctrl-x`.
-
 ![Ruby Test Settings view](http://cl.ly/image/1l3H0g1C1J3g/ruby-test-settings.png)
 
 **Shell**: executable or path to shell (e.g. `fish`, `/bin/zsh`)
@@ -29,8 +26,6 @@ Open the test file you want to run, then issue one of the following:
 * `cmd-ctrl-t` - Run the current test file
 * `cmd-ctrl-r` - Run the test at the current line in test file
 * `cmd-ctrl-e` - Re-run the previous test (doesn't need to have the test file active)
-* `cmd-ctrl-x` - Show/hide the test panel
-* `cmd-ctrl-c` - Cancel current test run
 
 ## Features
 

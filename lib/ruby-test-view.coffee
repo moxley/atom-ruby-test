@@ -1,7 +1,6 @@
 _ = require 'underscore-plus'
 {$,View} = require 'atom-space-pen-views'
 TestRunner = require './test-runner'
-ResizeHandle = require './resize-handle'
 Utility = require './utility'
 SourceInfo = require './source-info'
 Convert = require 'ansi-to-html'
@@ -10,35 +9,34 @@ module.exports =
 class RubyTestView extends View
   @content: ->
     @div class: "ruby-test inset-panel panel-bottom native-key-bindings", tabindex: -1, =>
-      @div class: "ruby-test-resize-handle"
-      @div class: "panel-heading", =>
-        @span 'Running tests: '
-        @span outlet: 'header'
-        @div class: "heading-buttons pull-right inline-block", =>
-          @div click: 'closePanel', class: "heading-close icon-x inline-block"
-      @div class: "panel-body", =>
-        @div class: 'ruby-test-spinner', 'Starting...'
-        @pre "", outlet: 'results'
+  #     @div class: "ruby-test-resize-handle"
+  #     @div class: "panel-heading", =>
+  #       @span 'Running tests: '
+  #       @span outlet: 'header'
+  #       @div class: "heading-buttons pull-right inline-block", =>
+  #         @div click: 'closePanel', class: "heading-close icon-x inline-block"
+  #     @div class: "panel-body", =>
+  #       @div class: 'ruby-test-spinner', 'Starting...'
+  #       @pre "", outlet: 'results'
 
-  initialize: (serializeState) ->
+  initialize: (serializeState, terminal) ->
+    @terminal = terminal;
     sourceInfo = new SourceInfo()
-    @results.on 'click', (e) ->
-      if e.target?.href
-        line = $(e.target).data('line')
-        file = $(e.target).data('file')
-        if !file.startsWith("/")
-          file = "#{sourceInfo.projectPath()}/#{file}"
-
-        promise = atom.workspace.open(file, { searchAllPanes: true, initialLine: line })
-        promise.done (editor) ->
-          editor.setCursorBufferPosition([line-1, 0])
-    atom.commands.add "atom-workspace", "ruby-test:toggle", => @toggle()
+    # TODO: Reimplement
+    # @results.on 'click', (e) ->
+    #   if e.target?.href
+    #     line = $(e.target).data('line')
+    #     file = $(e.target).data('file')
+    #     if !file.startsWith("/")
+    #       file = "#{sourceInfo.projectPath()}/#{file}"
+    #
+    #     promise = atom.workspace.open(file, { searchAllPanes: true, initialLine: line })
+    #     promise.done (editor) ->
+    #       editor.setCursorBufferPosition([line-1, 0])
     atom.commands.add "atom-workspace", "ruby-test:test-file", => @testFile()
     atom.commands.add "atom-workspace", "ruby-test:test-single", => @testSingle()
     atom.commands.add "atom-workspace", "ruby-test:test-previous", => @testPrevious()
     atom.commands.add "atom-workspace", "ruby-test:test-all", => @testAll()
-    atom.commands.add "atom-workspace", "ruby-test:cancel", => @cancelTest()
-    new ResizeHandle(@)
 
   # Returns an object that can be retrieved when package is activated
   serialize: ->
@@ -52,17 +50,8 @@ class RubyTestView extends View
     if @hasParent()
       @detach()
 
-  toggle: ->
-    if @hasParent()
-      @detach()
-    else
-      @showPanel()
-      unless @runner
-        @spinner.hide()
-        @setTestInfo("No tests running")
-
   testFile: ->
-    @runTest()
+    @runTest(testScope: "file")
 
   testSingle: ->
     @runTest(testScope: "single")
@@ -73,29 +62,16 @@ class RubyTestView extends View
   testPrevious: ->
     return unless @runner
     @saveFile()
-    @newTestView()
     @runner.run()
 
-  runTest: (overrideParams) ->
+  runTest: (params) ->
     @saveFile()
-    @newTestView()
-    params = _.extend({}, @testRunnerParams(), overrideParams || {})
-    @runner = new TestRunner(params)
+    @runner = new TestRunner(params, @terminal)
     @runner.run()
-    @spinner.show()
-
-  newTestView: ->
-    @output = ''
-    @flush()
-    @showPanel()
-
-  testRunnerParams: ->
-    write: @write
-    exit: @onTestRunEnd
-    setTestInfo: @setTestInfo
 
   setTestInfo: (infoStr) =>
-    @header.text(infoStr)
+    # TODO: Reimplement?
+    # @header.text(infoStr)
 
   onTestRunEnd: =>
     null
@@ -104,25 +80,6 @@ class RubyTestView extends View
     unless @hasParent()
       atom.workspace.addBottomPanel(item: @)
       @spinner = @find('.ruby-test-spinner')
-
-  write: (str) =>
-    @spinner.hide() if @spinner
-    @output ||= ''
-    convert = new Convert(escapeXML: true)
-    converted = convert.toHtml(str).replace /[^\s\[\]<>"'&;]+\.rb:[0-9]+/g, (s) =>
-      [file, line] = s.split(":")
-      "<a href=\"#{file}\" data-line=\"#{line}\" data-file=\"#{file}\">#{s}</a>"
-    @output += converted
-    @flush()
-
-  flush: ->
-    @results.html(@output)
-    @results.parent().scrollTop(@results.innerHeight())
-
-  cancelTest: ->
-    @runner.cancel()
-    @spinner?.hide()
-    @write('\nTests canceled')
 
   saveFile: ->
     util = new Utility
