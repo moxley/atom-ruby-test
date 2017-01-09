@@ -9,11 +9,9 @@ RubyTestView = require '../lib/ruby-test-view'
 describe "RubyTest", ->
   activationPromise = null
   workspaceElement = null
-  terminalActivationPromise = null
 
   beforeEach ->
     workspaceElement = atom.views.getView(atom.workspace)
-    terminalActivationPromise = atom.packages.activatePackage('platformio-ide-terminal')
     activationPromise = atom.packages.activatePackage('ruby-test')
 
   describe "when the ruby-test:test-file event is triggered", ->
@@ -25,8 +23,12 @@ describe "RubyTest", ->
       atom.commands.dispatch workspaceElement, 'ruby-test:test-file'
 
       waitsForPromise ->
-        terminalActivationPromise
+        require('atom-package-deps').install('ruby-test')
+
+      waitsForPromise ->
+        # atom.packages.activatePackage('ruby-test')
         activationPromise
 
       runs ->
-        expect(RubyTestView.prototype.initialize).toHaveBeenCalled()
+        atom.packages.activatePackage('platformio-ide-terminal').then ->
+          expect(RubyTestView.prototype.initialize).toHaveBeenCalled()
