@@ -15,7 +15,14 @@ module.exports =
       if atom.packages.isPackageDisabled('platformio-ide-terminal')
         alert("Platformio IDE Terminal package is disabled. It must be enabled to run tests.")
         return
+
+      if (@terminal.lastTerminalForTest)
+        # if we have a previous terminal opened from this test runner, close it
+        @terminal.lastTerminalForTest.closeBtn.click()
+
       @terminal.run([@command()])
+      terminals =  @terminal.getTerminalViews()
+      @terminal.lastTerminalForTest = terminals[terminals.length - 1]
 
     command: =>
       framework = @sourceInfo.testFramework()

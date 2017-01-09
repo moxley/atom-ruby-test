@@ -1,4 +1,3 @@
-_ = require 'underscore-plus'
 {$,View} = require 'atom-space-pen-views'
 TestRunner = require './test-runner'
 Utility = require './utility'

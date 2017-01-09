@@ -1,4 +1,3 @@
-_ = require 'underscore-plus'
 {$$} = require 'atom-space-pen-views'
 RubyTestView = require '../lib/ruby-test-view'
 TestRunner = require '../lib/test-runner'
@@ -8,10 +7,16 @@ describe "RubyTestView", ->
   testRunnerInitializeParams = null
   view = null
   fileOpened = false
-  terminalMock = { run: (commands) -> }
+  terminalMock = null
 
   beforeEach ->
-    view = new RubyTestView({}, terminalMock)
+    mockGetTerminalViews = [ { terminal: closeBtn: { click: -> } } ]
+    @terminalMock = {
+      run: (commands) ->
+      getTerminalViews: () =>
+        mockGetTerminalViews
+    }
+    view = new RubyTestView({}, @terminalMock)
 
   spyOnTestRunnerInitialize = ->
     spyOn(activeEditor, 'save')
@@ -101,7 +106,7 @@ describe "RubyTestView", ->
       it "intantiates TestRunner and calls ::run on it with specific arguments", ->
         spyOn(activeEditor, 'save')
 
-        previousRunner = new TestRunner({ scope: 'file' }, terminalMock)
+        previousRunner = new TestRunner({ scope: 'file' }, @terminalMock)
         previousRunner.command = -> "foo"
         view.runner = previousRunner
         view.testPrevious()

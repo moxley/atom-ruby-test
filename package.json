@@ -20,7 +20,6 @@
     "atom": ">=1.2.0 <2.0.0"
   },
   "dependencies": {
-    "underscore-plus": "^1.0.6",
     "ansi-to-html": "^0.2",
     "atom-space-pen-views": "^2.0.3",
     "atom-package-deps": "^4.3"
