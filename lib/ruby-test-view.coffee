@@ -32,10 +32,12 @@ class RubyTestView extends View
     #     promise = atom.workspace.open(file, { searchAllPanes: true, initialLine: line })
     #     promise.done (editor) ->
     #       editor.setCursorBufferPosition([line-1, 0])
+    atom.commands.add "atom-workspace", "ruby-test:toggle", => @toggle()
     atom.commands.add "atom-workspace", "ruby-test:test-file", => @testFile()
     atom.commands.add "atom-workspace", "ruby-test:test-single", => @testSingle()
     atom.commands.add "atom-workspace", "ruby-test:test-previous", => @testPrevious()
     atom.commands.add "atom-workspace", "ruby-test:test-all", => @testAll()
+    atom.commands.add "atom-workspace", "ruby-test:cancel", => @cancelTest()
 
   # Returns an object that can be retrieved when package is activated
   serialize: ->
@@ -48,6 +50,12 @@ class RubyTestView extends View
   closePanel: ->
     if @hasParent()
       @detach()
+
+  currentEditor: ->
+    atom.views.getView(atom.workspace.getActiveTextEditor())
+
+  toggle: ->
+    atom.commands.dispatch(@currentEditor(), 'platformio-ide-terminal:toggle')
 
   testFile: ->
     @runTest(testScope: "file")
@@ -79,6 +87,9 @@ class RubyTestView extends View
     unless @hasParent()
       atom.workspace.addBottomPanel(item: @)
       @spinner = @find('.ruby-test-spinner')
+
+  cancelTest: ->
+    atom.commands.dispatch(@currentEditor(), 'platformio-ide-terminal:close')
 
   saveFile: ->
     util = new Utility

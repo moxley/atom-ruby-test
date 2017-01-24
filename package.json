@@ -8,6 +8,7 @@
   "description": "Run Ruby tests, Rspec examples, and Cucumber features from Atom",
   "activationCommands": {
     "atom-workspace": [
+      "ruby-test:toggle",
       "ruby-test:test-file",
       "ruby-test:test-single",
       "ruby-test:test-previous",
