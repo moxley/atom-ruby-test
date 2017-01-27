@@ -1,4 +1,3 @@
-_ = require 'underscore-plus'
 {$$} = require 'atom-space-pen-views'
 RubyTestView = require '../lib/ruby-test-view'
 TestRunner = require '../lib/test-runner'
@@ -8,6 +7,16 @@ describe "RubyTestView", ->
   testRunnerInitializeParams = null
   view = null
   fileOpened = false
+  terminalMock = null
+
+  beforeEach ->
+    mockGetTerminalViews = [ { terminal: closeBtn: { click: -> } } ]
+    @terminalMock = {
+      run: (commands) ->
+      getTerminalViews: () =>
+        mockGetTerminalViews
+    }
+    view = new RubyTestView({}, @terminalMock)
 
   spyOnTestRunnerInitialize = ->
     spyOn(activeEditor, 'save')
@@ -19,8 +28,6 @@ describe "RubyTestView", ->
     expect(testRunnerInitializeParams).toBeDefined()
     expect(testRunnerInitializeParams).not.toBe(null)
     expect(testRunnerInitializeParams.write).toEqual(view.write)
-    expect(testRunnerInitializeParams.exit).toEqual(view.onTestRunEnd)
-    expect(testRunnerInitializeParams.setTestInfo).toEqual(view.setTestInfo)
 
   spyOnTestRunnerRun = ->
     spyOn(activeEditor, 'save')
@@ -43,7 +50,6 @@ describe "RubyTestView", ->
     beforeEach ->
       fileOpened = false
       testRunnerInitializeParams = null
-      view = null
       activeEditor = null
       setUpActiveEditor()
 
@@ -51,7 +57,6 @@ describe "RubyTestView", ->
       it "instantiates TestRunner with specific arguments", ->
         spyOnTestRunnerInitialize()
 
-        view = new RubyTestView()
         view.testAll()
 
         validateTestRunnerInitialize()
@@ -60,7 +65,6 @@ describe "RubyTestView", ->
       it "instantiates TestRunner and calls ::run on it", ->
         spyOnTestRunnerRun()
 
-        view = new RubyTestView()
         view.testAll()
 
         validateTestRunnerRun()
@@ -69,27 +73,23 @@ describe "RubyTestView", ->
       it "instantiates TestRunner with specific arguments", ->
         spyOnTestRunnerInitialize()
 
-        view = new RubyTestView()
         view.testFile()
 
         validateTestRunnerInitialize()
-        expect(testRunnerInitializeParams.testScope).not.toBeDefined()
+        expect(testRunnerInitializeParams.testScope).toEqual('file')
 
       it "calls ::run on the TestRunner instance", ->
         spyOnTestRunnerRun()
 
-        view = new RubyTestView()
         spyOn(view, 'setTestInfo').andCallThrough()
         view.testFile()
 
         validateTestRunnerRun()
-        expect(view.setTestInfo).toHaveBeenCalled()
 
     describe "::testSingle", ->
       it "instantiates TestRunner with specific arguments", ->
         spyOnTestRunnerInitialize()
 
-        view = new RubyTestView()
         view.testSingle()
 
         validateTestRunnerInitialize()
@@ -98,7 +98,6 @@ describe "RubyTestView", ->
       it "instantiates TestRunner and calls ::run on it", ->
         spyOnTestRunnerRun()
 
-        view = new RubyTestView()
         view.testSingle()
 
         validateTestRunnerRun()
@@ -107,13 +106,11 @@ describe "RubyTestView", ->
       it "intantiates TestRunner and calls ::run on it with specific arguments", ->
         spyOn(activeEditor, 'save')
 
-        view = new RubyTestView()
-        previousRunner = new TestRunner(view.testRunnerParams())
+        previousRunner = new TestRunner({ scope: 'file' }, @terminalMock)
         previousRunner.command = -> "foo"
         view.runner = previousRunner
         view.testPrevious()
 
-        expect(view.output).toBe("")
         expect(view.runner).toBe(previousRunner)
         expect(activeEditor.save).toHaveBeenCalled()
 
@@ -121,7 +118,6 @@ describe "RubyTestView", ->
     beforeEach ->
       fileOpened = false
       testRunnerInitializeParams = null
-      view = null
 
     # Reproduce https://github.com/moxley/atom-ruby-test/issues/33:
     # "Uncaught TypeError: Cannot read property 'save' of undefined"
@@ -129,15 +125,7 @@ describe "RubyTestView", ->
       it "instantiates TestRunner and calls ::run on it", ->
         spyOnTestRunnerRun()
 
-        view = new RubyTestView()
         view.testAll()
 
         expect(TestRunner.prototype.initialize).toHaveBeenCalled()
         expect(TestRunner.prototype.run).toHaveBeenCalledWith()
-
-
-  describe "::write", ->
-    it "appends content to results element", ->
-      view = new RubyTestView()
-      view.write("foo")
-      expect(view.results.text()).toBe "foo"
