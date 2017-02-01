@@ -14,9 +14,15 @@ Click the `Install` button.
 
 ## Configure
 
-![Ruby Test Settings view](http://cl.ly/image/1l3H0g1C1J3g/ruby-test-settings.png)
+IMPORTANT: Before configuring ruby-test, toggle to the test panel to activate
+the package: `cmd-ctrl-x`.
 
-**Shell**: executable or path to shell (e.g. `fish`, `/bin/zsh`)
+This relies on the
+[platformio-ide-terminal](https://github.com/platformio/platformio-atom-ide-terminal)
+package to run commands and has its own settings. Make sure, in its settings, the
+Working Directory is set to "Project". This is the package's default, but might be different if you already had the package installed.
+
+![Ruby Test Settings view](http://cl.ly/image/1l3H0g1C1J3g/ruby-test-settings.png)
 
 ## Run
 

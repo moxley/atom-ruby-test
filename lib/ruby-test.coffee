@@ -50,9 +50,6 @@ module.exports =
       title: "Cucumber command: Run features at current line"
       type: 'string',
       default: "cucumber --color {relative_path}:{line_number}"
-    shell:
-      type: 'string',
-      default: "bash"
     specFramework:
       type: 'string'
       default: ''
