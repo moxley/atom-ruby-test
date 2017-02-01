@@ -1,5 +1,8 @@
 # Change Log
 
+## Version 1.0.0
+* Use the platformio-ide-terminal package to run commands (#96)
+
 ## Version 0.9.17
 
 * Fix broken test file path calculation for multi-path projects
