@@ -1,7 +1,7 @@
 # Change Log
 
 ## Version 1.0.0
-* Use the platformio-ide-terminal package to run commands (#96)
+* Use the platformio-ide-terminal package to run commands ([pr96](https://github.com/moxley/atom-ruby-test/pull/96))
 
 ## Version 0.9.17
 
