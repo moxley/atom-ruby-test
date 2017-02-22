@@ -30,7 +30,8 @@ describe "RubyTestView", ->
     expect(testRunnerInitializeParams.write).toEqual(view.write)
 
   spyOnTestRunnerRun = ->
-    spyOn(activeEditor, 'save')
+    if activeEditor?
+      spyOn(activeEditor, 'save')
     spyOn(TestRunner.prototype, 'initialize').andCallThrough()
     spyOn(TestRunner.prototype, 'run').andCallThrough()
     spyOn(TestRunner.prototype, 'command').andReturn 'fooTestCommand'
@@ -80,8 +81,6 @@ describe "RubyTestView", ->
 
       it "calls ::run on the TestRunner instance", ->
         spyOnTestRunnerRun()
-
-        spyOn(view, 'setTestInfo').andCallThrough()
         view.testFile()
 
         validateTestRunnerRun()

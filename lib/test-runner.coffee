@@ -30,8 +30,16 @@ module.exports =
 
     returnFocusToEditorAfterTerminalRun: =>
       editor = @utility.editor()
+
+      # If no files are open (we're running the entire suite) then
+      # there is no cursor to return to
+      return unless editor?
+
       cursorPos = editor.getCursorBufferPosition()
 
+      # It appears that the terminal does not have create a panel until the
+      # animation is complete. We need to wait for it to finish before we can
+      # blur it to return focus
       setTimeout ->
         editor.setCursorBufferPosition(cursorPos, {autoscroll: true})
         panels = atom.workspace.getBottomPanels();
