@@ -1,5 +1,8 @@
 # Change Log
 
+## Version 1.0.1
+* #99 Return focus after terminal loads
+
 ## Version 1.0.0
 * Use the platformio-ide-terminal package to run commands ([pr96](https://github.com/moxley/atom-ruby-test/pull/96))
 
