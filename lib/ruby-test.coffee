@@ -13,7 +13,7 @@ module.exports =
     minitestSingleCommand:
       title: "Minitest command: Run current test"
       type: 'string'
-      default: "ruby {relative_path} -n \"/{regex}/\""
+      default: "ruby -I test {relative_path} -n \"/{regex}/\""
     testAllCommand:
       title: "Ruby Test command: Run all tests"
       type: 'string'
