@@ -9,7 +9,7 @@ quickly and easily.
 
 ## Announcement
 
-I'm looking for someone to take over this project as a maintainer. I haven't used ruby-test for over a year. Contact me through Twitter direct message: @moxicon.
+This project is no longer maintained. I'm looking for someone to take over this project as a maintainer. I haven't used ruby-test for over a year. Contact me through Twitter direct message: @moxicon.
 
 ---
 
