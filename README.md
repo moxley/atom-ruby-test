@@ -5,6 +5,10 @@
 Run Ruby tests, RSpec examples, and Cucumber features from Atom,
 quickly and easily.
 
+## Announcement
+
+I'm looking for someone to take over this project as a maintainer. I haven't used ruby-test for over a year. Contact me through Twitter direct message: @moxicon.
+
 ![Running tests is quick and easy](http://cl.ly/image/300n2g101z0y/ruby-test6.gif)
 
 ## Install
