@@ -26,6 +26,11 @@ describe "SourceInfo", ->
     if 'testFile' of opts
       editor.buffer.file.path = opts.testFile
 
+    if 'testTreeviewPath' of opts
+      delete editor.buffer.file.path
+      treeViewPackage = { mainModule: { treeView: { selectedPath: opts.testTreeviewPath }} }
+      spyOn(atom.packages, 'getActivePackage').andReturn(treeViewPackage)
+
     if 'projectPaths' of opts
       atom.project.getPaths = -> opts.projectPaths
 
@@ -241,6 +246,13 @@ describe "SourceInfo", ->
         projectPaths: ['/projects/project_1', '/projects/project_2']
         testFile: '/projects/project_2/bar/foo_test.rb'
       expect(sourceInfo.activeFile()).toBe("bar/foo_test.rb")
+
+    it "if no active editor, it is the selected path in treeview", ->
+      withSetup
+        projectPaths: ['/projects/project_1', '/projects/project_2']
+        testTreeviewPath: '/projects/project_2/foo/bar'
+      expect(sourceInfo.activeFile()).toBe("foo/bar")
+
 
   describe "::currentLine", ->
     it "is the cursor getBufferRow() plus 1", ->
