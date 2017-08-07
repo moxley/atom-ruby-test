@@ -6,8 +6,9 @@ describe "TestRunner", ->
 
   beforeEach ->
     @mockRun = jasmine.createSpy('run')
-    @mockClick = jasmine.createSpy('click')
-    @mockGetTerminalViews = [ { closeBtn: { click: @mockClick } } ]
+    @mockTerminalInput = jasmine.createSpy('input')
+    @mockOpen = jasmine.createSpy('open')
+    @mockGetTerminalViews = [ { input: @mockTerminalInput, open: @mockOpen } ]
     @mockTerminal = {
       run: @mockRun, getTerminalViews: => @mockGetTerminalViews
     }
@@ -25,7 +26,8 @@ describe "TestRunner", ->
       runner = new TestRunner(@testRunnerParams, @mockTerminal)
       runner.run()
       expect(@mockRun).toHaveBeenCalledWith(["fooTestCommand fooTestFile:100"])
-      expect(@mockClick).not.toHaveBeenCalled()
+      expect(@mockOpen).not.toHaveBeenCalled()
+      expect(@mockTerminalInput).not.toHaveBeenCalled()
 
     it "constructs a single-minitest command when testScope is 'single'", ->
       Command.testSingleCommand.andReturn('fooTestCommand {relative_path} -n \"/{regex}/\"')
@@ -34,10 +36,11 @@ describe "TestRunner", ->
       runner.run()
       expect(@mockRun).toHaveBeenCalledWith(["fooTestCommand fooTestFile -n \"/test foo/\""])
 
-    it "closes the previous terminal used for testing", ->
+    it "reuses the previous terminal used for testing", ->
       @testRunnerParams.testScope = "single"
       runner = new TestRunner(@testRunnerParams, @mockTerminal)
       runner.run()
       runner = new TestRunner(@testRunnerParams, @mockTerminal)
       runner.run()
-      expect(@mockClick).toHaveBeenCalled()
+      expect(@mockOpen).toHaveBeenCalled()
+      expect(@mockTerminalInput).toHaveBeenCalledWith("fooTestCommand fooTestFile:100\n")
