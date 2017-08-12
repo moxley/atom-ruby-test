@@ -148,4 +148,4 @@ module.exports =
 
     filePath: ->
       util = new Utility
-      util.filePath()
+      util.activePath()
