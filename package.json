@@ -26,7 +26,7 @@
     "atom-package-deps": "^4.3"
   },
   "package-deps": [
-    "platformio-ide-terminal"
+    "terminus"
   ],
   "keywords": [
     "ruby",
@@ -36,9 +36,9 @@
     "cucumber"
   ],
   "consumedServices": {
-    "runInTerminal": {
+    "terminusTerminal": {
       "versions": {
-        "0.14.x": "consumeRunInTerminal"
+        "1.1.x": "consumeRunInTerminal"
       }
     }
   }

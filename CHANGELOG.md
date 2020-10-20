@@ -1,5 +1,9 @@
 # Change Log
 
+## Master
+
+* Use the terminus package to run commands
+
 ## Version 1.0.2
 
 * #101 Add ruby include path default test command

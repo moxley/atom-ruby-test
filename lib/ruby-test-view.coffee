@@ -35,7 +35,7 @@ class RubyTestView extends View
     atom.views.getView(atom.workspace.getActiveTextEditor())
 
   toggle: ->
-    atom.commands.dispatch(@currentEditor(), 'platformio-ide-terminal:toggle')
+    atom.commands.dispatch(@currentEditor(), 'terminus:toggle')
 
   testFile: ->
     @runTest(testScope: "file")
@@ -65,7 +65,7 @@ class RubyTestView extends View
       @spinner = @find('.ruby-test-spinner')
 
   cancelTest: ->
-    atom.commands.dispatch(@currentEditor(), 'platformio-ide-terminal:close')
+    atom.commands.dispatch(@currentEditor(), 'terminus:close')
 
   saveFile: ->
     util = new Utility
