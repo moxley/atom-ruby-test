@@ -14,8 +14,8 @@ module.exports =
       @utility = new Utility
 
     run: ->
-      if atom.packages.isPackageDisabled('platformio-ide-terminal')
-        alert("Platformio IDE Terminal package is disabled. It must be enabled to run tests.")
+      if atom.packages.isPackageDisabled('terminus')
+        alert("Terminus package is disabled. It must be enabled to run tests.")
         return
 
       @returnFocusToEditorAfterTerminalRun();
@@ -44,7 +44,7 @@ module.exports =
         editor.setCursorBufferPosition(cursorPos, {autoscroll: true})
         panels = atom.workspace.getBottomPanels();
         for panel in panels
-          if panel.getItem().hasClass?('platformio-ide-terminal')
+          if panel.getItem().hasClass?('terminus')
             panel.getItem().blur()
 
         editor.getElement().focus()

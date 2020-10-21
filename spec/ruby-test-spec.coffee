@@ -15,7 +15,7 @@ describe "RubyTest", ->
     activationPromise = atom.packages.activatePackage('ruby-test')
 
   describe "when the ruby-test:test-file event is triggered", ->
-    it "displays the platformio-ide-terminal", ->
+    it "displays terminus", ->
       spyOn(RubyTestView.prototype, 'initialize').andReturn({ destroy: -> })
 
       # This is an activation event, triggering it will cause the package to be
@@ -30,5 +30,5 @@ describe "RubyTest", ->
         activationPromise
 
       runs ->
-        atom.packages.activatePackage('platformio-ide-terminal').then ->
+        atom.packages.activatePackage('terminus').then ->
           expect(RubyTestView.prototype.initialize).toHaveBeenCalled()
