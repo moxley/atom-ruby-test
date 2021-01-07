@@ -46,7 +46,7 @@ module.exports =
       regExp = @regExpForTestStyle[testStyle]
       match = testHeaderLine? and testHeaderLine.match(regExp) or null
       if match
-        match[1]
+        match[1].replace(/ /g,'_')
       else
         ""
 
